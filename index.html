@@ -275,6 +275,23 @@
   .contact-card h3 { margin-bottom: 18px; font-size: 1.2rem; }
   .contact-line { display: flex; gap: 12px; margin-bottom: 14px; font-size: 0.96rem; }
   .contact-line svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+  .social-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+  .social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 18px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #fff;
+    transition: filter 0.15s ease, transform 0.1s ease;
+  }
+  .social-btn:hover { filter: brightness(1.08); }
+  .social-btn svg { width: 19px; height: 19px; flex-shrink: 0; }
+  .social-btn.whatsapp { background: #2F6E58; }
+  .social-btn.instagram { background: linear-gradient(135deg, #f58529, #dd2a7b 45%, #8134af 75%, #515bd4); }
   .map-card {
     background: var(--paper-alt);
     border-radius: 4px;
@@ -634,6 +651,16 @@
         <div class="contact-line">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>
           <span>Pzt–Cmt 09.00–19.00, Pazar kapalı</span>
+        </div>
+        <div class="social-buttons">
+          <a class="social-btn whatsapp" href="https://wa.me/905550272798?text=Merhaba%2C%20MMETG%C3%96Z%20OPT%C4%B0K%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.6 14.3c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3.1s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.5.7 1.8.8 1.9.1.1.1.3 0 .5-.1.2-.1.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.5 1.6.3.2.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.8.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+            <span>WhatsApp'tan Yaz</span>
+          </a>
+          <a class="social-btn instagram" href="https://www.instagram.com/mmetgozoptiklens" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            <span>Instagram'da Takip Et</span>
+          </a>
         </div>
       </div>
       <div class="map-card">
