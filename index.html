@@ -6,7 +6,7 @@
 <title>MMETGÖZ OPTİK — Çerçeve Koleksiyonu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --paper: #F8F4E9;
@@ -82,25 +82,12 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.28rem;
+    font-weight: 600;
     text-decoration: none;
   }
   .brand svg { width: 34px; height: 20px; flex-shrink: 0; }
-  .brand .wordmark {
-    position: relative;
-    display: inline-flex;
-    flex-direction: column;
-    font-family: 'Permanent Marker', cursive;
-    font-size: 1.32rem;
-    line-height: 1;
-    letter-spacing: 0.5px;
-    transform: rotate(-2deg);
-  }
-  .brand .wordmark .w1 { color: var(--ink); }
-  .brand .wordmark .w2 { color: var(--amber); margin-top: 1px; align-self: flex-end; }
-  .brand .wordmark .scribble { position: absolute; left: -6px; right: -10px; bottom: -7px; height: 10px; }
-  .brand .wordmark .scribble path {
-    fill: none; stroke: var(--teal); stroke-width: 2.5; stroke-linecap: round;
-  }
   .nav-links {
     display: flex;
     gap: 30px;
@@ -406,12 +393,7 @@
         <circle cx="62" cy="55" r="42"/><circle cx="178" cy="55" r="42"/>
         <path d="M104 55 h32"/><path d="M20 55 C4 48 0 38 0 26"/><path d="M220 55 C236 48 240 38 240 26"/>
       </g></svg>
-      <span class="wordmark">
-        <span class="w1">MMETGÖZ</span><span class="w2">OPTİK</span>
-        <svg class="scribble" viewBox="0 0 220 10" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M2 6 C40 1, 75 9, 115 4 S 180 1, 218 6"/>
-        </svg>
-      </span>
+      MMETGÖZ OPTİK
     </a>
     <ul class="nav-links">
       <li><a href="#koleksiyon">Koleksiyon</a></li>
