@@ -1,12 +1,12 @@
 {
   "products": [
     {
-      "name": "Kalın Kare Çerçeve",
-      "brand": "Vogue",
-      "meta": "Vogue · Kaplan deseni",
-      "category": "sun",
-      "price": 1450,
-      "image": "images/vogue-cateye-tortoise-01.jpg",
+      "name": "Rayban",
+      "brand": "Rayban",
+      "meta": "Rayban · wayfarer",
+      "category": "optik",
+      "price": 14500,
+      "image": "images/rayban-1790464894949.jpg",
       "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
     },
     {
