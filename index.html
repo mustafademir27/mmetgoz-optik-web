@@ -318,17 +318,24 @@
     right: 22px;
     background: #2F6E58;
     color: #fff;
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 9px;
+    padding: 15px 20px;
+    border-radius: 999px;
     text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
     box-shadow: 0 2px 10px rgba(0,0,0,0.25);
     z-index: 50;
+    transition: transform 0.15s ease;
   }
-  .wa-float svg { width: 26px; height: 26px; }
+  .wa-float:hover { transform: translateY(-2px); }
+  .wa-float svg { width: 24px; height: 24px; flex-shrink: 0; }
+  @media (max-width: 480px) {
+    .wa-float span { display: none; }
+    .wa-float { padding: 15px; }
+  }
 
   @media (max-width: 880px) {
     .hero { grid-template-columns: 1fr; padding-top: 44px; }
@@ -597,9 +604,9 @@
         <p>Mahalledeki herkesin gözlüğünü tanıyan bir dükkanız. Muayeneden çerçeve seçimine, camın kesimine kadar her adımı biz takip ediyoruz.</p>
       </div>
       <div>
-        <p>MMETGÖZ OPTİK, 2010'dan bu yana aynı sokakta hizmet veriyor. Numaralı gözlükten güneş gözlüğüne, çocuk çerçevelerinden özel üretim modellere kadar geniş bir seçkiyi elinizde deneyebilirsiniz.</p>
+        <p>MMETGÖZ OPTİK, 2021'den bu yana aynı sokakta hizmet veriyor. Numaralı gözlükten güneş gözlüğüne, çocuk çerçevelerinden özel üretim modellere kadar geniş bir seçkiyi elinizde deneyebilirsiniz.</p>
         <div class="stats">
-          <div class="stat"><b>15+</b><span>yıl deneyim</span></div>
+          <div class="stat"><b>5+</b><span>yıl deneyim</span></div>
           <div class="stat"><b>2.000+</b><span>mutlu müşteri</span></div>
         </div>
       </div>
@@ -618,23 +625,23 @@
         <h3>Dükkan Bilgileri</h3>
         <div class="contact-line">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
-          <span>Bağdat Caddesi No: 128, Kadıköy / İstanbul</span>
+          <span>Umut Mah. Abdulkadir Konukoğlu Blv. No:76/K, Şehitkamil / Gaziantep</span>
         </div>
         <div class="contact-line">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8Z"/></svg>
-          <span>0216 555 00 00</span>
+          <span>0555 027 27 98</span>
         </div>
         <div class="contact-line">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>
-          <span>Pzt–Cmt 09.30–19.00, Pazar kapalı</span>
+          <span>Pzt–Cmt 09.00–19.00, Pazar kapalı</span>
         </div>
       </div>
       <div class="map-card">
         <div>
           <h3>Yol Tarifi</h3>
-          <div class="map-visual">Bağdat Caddesi, Kadıköy</div>
+          <div class="map-visual">Umut Mah., Şehitkamil / Gaziantep</div>
         </div>
-        <a class="btn btn-primary" style="text-align:center" href="https://www.google.com/maps" target="_blank" rel="noopener">Haritada Aç</a>
+        <a class="btn btn-primary" style="text-align:center" href="https://maps.app.goo.gl/DwDhnj93USjN3dNi6" target="_blank" rel="noopener">Haritada Aç</a>
       </div>
     </div>
   </section>
@@ -646,14 +653,15 @@
     <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
     </a>
-    <a href="#" aria-label="WhatsApp" target="_blank" rel="noopener">
+    <a href="https://wa.me/905550272798" aria-label="WhatsApp" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.6 14.3c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3.1s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.5.7 1.8.8 1.9.1.1.1.3 0 .5-.1.2-.1.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.5 1.6.3.2.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.8.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
     </a>
   </div>
 </footer>
 
-<a class="wa-float" href="https://wa.me/905555550000" target="_blank" rel="noopener" aria-label="WhatsApp'tan yazın">
+<a class="wa-float" href="https://wa.me/905550272798?text=Merhaba%2C%20MMETG%C3%96Z%20OPT%C4%B0K%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener" aria-label="WhatsApp'tan yazın">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.6 14.3c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3.1s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.5.7 1.8.8 1.9.1.1.1.3 0 .5-.1.2-.1.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.5 1.6.3.2.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.8.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+  <span>WhatsApp'tan Yaz</span>
 </a>
 
 <script>
