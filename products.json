@@ -1,0 +1,148 @@
+{
+  "products": [
+    {
+      "name": "Kalın Kare Çerçeve",
+      "brand": "Vogue",
+      "meta": "Vogue · Kaplan deseni",
+      "category": "sun",
+      "price": 1450,
+      "image": "images/vogue-cateye-tortoise-01.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Kontrast Sap Detaylı Çerçeve",
+      "brand": "Vogue",
+      "meta": "Vogue · Gri desen / Pembe",
+      "category": "sun",
+      "price": 1450,
+      "image": "images/vogue-cateye-grey-pink-02.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Şeffaf Pembe Çerçeve",
+      "brand": "Vogue",
+      "meta": "Vogue · Şeffaf pembe / Kaplan deseni sap",
+      "category": "sun",
+      "price": 1550,
+      "image": "images/vogue-cateye-pink-tortoise-03.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Kaplan Desenli Çerçeve",
+      "brand": "Vogue",
+      "meta": "Vogue · Kahverengi",
+      "category": "sun",
+      "price": 1450,
+      "image": "images/vogue-cateye-brown-tortoise-04.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Oval Renkli Çerçeve",
+      "brand": "Vogue",
+      "meta": "Vogue · Turkuaz / Pembe cam",
+      "category": "sun",
+      "price": 1250,
+      "image": "images/vogue-oval-teal-pink-05.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Oval Fildişi Çerçeve",
+      "brand": "Vogue",
+      "meta": "Vogue · Fildişi",
+      "category": "sun",
+      "price": 1250,
+      "image": "images/vogue-oval-ivory-06.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Oval Magenta Çerçeve",
+      "brand": "Vogue",
+      "meta": "Vogue · Magenta",
+      "category": "sun",
+      "price": 1250,
+      "image": "images/vogue-oval-magenta-07.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Oval Kaplan Desenli Çerçeve",
+      "brand": "Vogue",
+      "meta": "Vogue · Gri desen",
+      "category": "sun",
+      "price": 1350,
+      "image": "images/vogue-oval-grey-tortoise-08.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Flat Top Aviator",
+      "brand": "Ray-Ban",
+      "meta": "Ray-Ban · Kaplan deseni",
+      "category": "sun",
+      "price": 2850,
+      "image": "images/rayban-aviator-tortoise-09.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Çift Köprülü Yuvarlak Çerçeve",
+      "brand": "Ray-Ban",
+      "meta": "Ray-Ban · Siyah / Altın",
+      "category": "sun",
+      "price": 2650,
+      "image": "images/rayban-round-double-bridge-10.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Kelebek Çerçeve",
+      "brand": "",
+      "meta": "Asetat çerçeve · Bordo",
+      "category": "optik",
+      "price": 720,
+      "image": "images/placeholder.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Dikdörtgen Çerçeve",
+      "brand": "",
+      "meta": "Titanyum çerçeve · Mat siyah",
+      "category": "optik",
+      "price": 890,
+      "image": "images/placeholder.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Yuvarlak Çerçeve",
+      "brand": "",
+      "meta": "İnce metal çerçeve · Gümüş",
+      "category": "optik",
+      "price": 610,
+      "image": "images/placeholder.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Yuvarlak Çocuk Çerçevesi",
+      "brand": "",
+      "meta": "Esnek malzeme · Mavi",
+      "category": "cocuk",
+      "price": 390,
+      "image": "images/placeholder.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Kare Çocuk Çerçevesi",
+      "brand": "",
+      "meta": "Esnek malzeme · Sarı",
+      "category": "cocuk",
+      "price": 390,
+      "image": "images/placeholder.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    },
+    {
+      "name": "Kelebek Çocuk Çerçevesi",
+      "brand": "",
+      "meta": "Esnek malzeme · Mor",
+      "category": "cocuk",
+      "price": 420,
+      "image": "images/placeholder.jpg",
+      "buyUrl": "https://www.trendyol.com/magaza/m-m-461502"
+    }
+  ]
+}

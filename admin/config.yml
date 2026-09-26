@@ -1,0 +1,40 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Netlify Identity + Git Gateway ile giriş yapan kullanıcı adına commit atar.
+# Kurulum: Netlify > Site configuration > Identity > Enable Identity,
+#          sonra Services > Git Gateway > Enable Git Gateway.
+
+media_folder: "images"
+public_folder: "images"
+
+locale: "tr"
+
+collections:
+  - name: "products"
+    label: "Ürünler"
+    label_singular: "Ürün"
+    description: "Koleksiyon sayfasında görünen tüm ürünler. Yeni ürün eklemek için 'Yeni Ürün' butonunu kullan, mevcut birini düzenlemek için listeden tıkla."
+    file: "products.json"
+    format: "json"
+    identifier_field: "name"
+    fields:
+      - label: "Ürünler"
+        name: "products"
+        widget: "list"
+        summary: "{{fields.name}} — {{fields.meta}}"
+        fields:
+          - { label: "Ürün Adı", name: "name", widget: "string", hint: "Örn: Kalın Kare Çerçeve" }
+          - { label: "Marka", name: "brand", widget: "string", required: false, hint: "Örn: Vogue, Ray-Ban (yoksa boş bırakabilirsin)" }
+          - { label: "Açıklama", name: "meta", widget: "string", hint: "Kartın altındaki kısa açıklama, örn: Vogue · Kaplan deseni" }
+          - label: "Kategori"
+            name: "category"
+            widget: "select"
+            options:
+              - { label: "Güneş Gözlüğü", value: "sun" }
+              - { label: "Numaralı Gözlük", value: "optik" }
+              - { label: "Çocuk Gözlüğü", value: "cocuk" }
+          - { label: "Fiyat (₺)", name: "price", widget: "number", value_type: "int", min: 0 }
+          - { label: "Ürün Fotoğrafı", name: "image", widget: "image", hint: "Tercihen yatay (4:3) çekilmiş, gözlüğün tamamının göründüğü bir fotoğraf" }
+          - { label: "Satın Alma Linki (Trendyol)", name: "buyUrl", widget: "string", hint: "Trendyol'daki ürün sayfasının linki" }
