@@ -28,7 +28,7 @@
     line-height: 1.5;
   }
   h1, h2 { font-family: 'Fraunces', Georgia, serif; margin: 0; font-weight: 600; }
-  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 20px 80px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 80px; }
 
   /* ---------- Login ---------- */
   #loginScreen {
@@ -73,13 +73,13 @@
   .btn-primary:hover { background: var(--amber); }
   .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
   .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
-  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 8px 14px; font-size: 0.85rem; }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
   .btn-danger:hover { background: var(--danger); color: #fff; }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
   .login-card button { width: 100%; margin-top: 6px; }
   .login-error { color: var(--danger); font-size: 0.88rem; margin-top: 10px; min-height: 1.2em; }
 
-  /* ---------- Panel ---------- */
+  /* ---------- Panel shell ---------- */
   #panel { display: none; }
   header.top {
     display: flex;
@@ -106,20 +106,65 @@
 
   .toolbar { display: flex; gap: 12px; margin: 22px 0; flex-wrap: wrap; }
 
-  .product-card {
+  /* ---------- List view ---------- */
+  .admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 20px;
+  }
+  .admin-card {
     background: var(--paper-alt);
     border-radius: 6px;
-    padding: 20px;
-    margin-bottom: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
-  .product-card .row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 12px;
+  .admin-card .thumb {
+    aspect-ratio: 4 / 3;
+    background: var(--paper);
+    overflow: hidden;
   }
-  .product-card .row.full { grid-template-columns: 1fr; }
-  .product-card label {
+  .admin-card .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .admin-card .body { padding: 14px 16px; flex: 1; }
+  .cat-pill {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .cat-pill.sun { background: var(--amber); }
+  .cat-pill.optik { background: var(--teal); }
+  .cat-pill.cocuk { background: #7A5FA6; }
+  .admin-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 3px; }
+  .admin-card .meta { color: var(--ink-soft); font-size: 0.85rem; margin: 0 0 6px; }
+  .admin-card .price { font-weight: 600; margin: 0; }
+  .admin-card .actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--line);
+  }
+  .admin-card .actions button { flex: 1; padding: 9px 10px; font-size: 0.85rem; }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Edit view ---------- */
+  #editView { display: none; max-width: 620px; }
+  .back-link {
+    background: none; border: none; padding: 0; margin-bottom: 20px;
+    color: var(--ink-soft); font-size: 0.9rem; text-decoration: underline; cursor: pointer;
+  }
+  .back-link:hover { color: var(--ink); }
+  .field { margin-bottom: 16px; }
+  .field label {
     display: block;
     font-size: 0.78rem;
     color: var(--ink-soft);
@@ -127,40 +172,37 @@
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
-  .product-card .field { min-width: 0; }
-  .card-footer {
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .photo-picker {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid var(--line);
+    gap: 16px;
+    background: var(--paper-alt);
+    border-radius: 6px;
+    padding: 16px;
   }
-  .thumb-row { display: flex; align-items: center; gap: 14px; }
-  .thumb-row img {
-    width: 84px; height: 63px; object-fit: cover; border-radius: 4px;
-    background: var(--paper); border: 1px solid var(--line);
+  .photo-picker .preview {
+    width: 130px; height: 97px; border-radius: 4px; overflow: hidden;
+    background: var(--paper); border: 1px solid var(--line); flex-shrink: 0;
   }
+  .photo-picker .preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .file-btn {
-    display: inline-block; font-size: 0.85rem; color: var(--ink);
+    display: inline-block; font-size: 0.88rem; color: var(--ink);
     text-decoration: underline; cursor: pointer;
   }
   .file-btn input { display: none; }
-
-  #saveBar {
-    position: sticky;
-    bottom: 0;
-    background: var(--paper);
-    border-top: 1px solid var(--line);
-    padding: 16px 20px;
+  .edit-actions {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
-    margin: 0 -20px;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
   }
 
-  @media (max-width: 640px) {
-    .product-card .row { grid-template-columns: 1fr; }
+  @media (max-width: 560px) {
+    .field-row { grid-template-columns: 1fr; }
+    .photo-picker { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
@@ -181,46 +223,98 @@
     <header class="top">
       <div>
         <h1>Ürün Yönetimi</h1>
-        <p>Ürün ekle, düzenle veya kaldır. Kaydettiğinde site birkaç dakika içinde otomatik güncellenir.</p>
+        <p>Bir ürünü düzenlemek veya silmek için üzerine tıkla. Kaydettiğinde site birkaç dakika içinde otomatik güncellenir.</p>
       </div>
       <button class="btn-ghost" id="logoutBtn">Çıkış</button>
     </header>
 
     <div id="statusBar"></div>
 
-    <div class="toolbar">
-      <button class="btn-primary" id="addBtn">+ Yeni Ürün</button>
+    <!-- LIST VIEW -->
+    <div id="listView">
+      <div class="toolbar">
+        <button class="btn-primary" id="addBtn">+ Yeni Ürün</button>
+      </div>
+      <div class="admin-grid" id="adminGrid"></div>
     </div>
 
-    <div id="productList"></div>
+    <!-- EDIT VIEW -->
+    <div id="editView">
+      <button class="back-link" id="backBtn">← Ürünlere Dön</button>
+      <h2 id="editTitle" style="font-size:1.15rem; margin-bottom:20px;">Ürünü Düzenle</h2>
 
-    <div id="saveBar">
-      <button class="btn-ghost" id="reloadBtn">Değişiklikleri Geri Al</button>
-      <button class="btn-primary" id="saveBtn">Kaydet ve Yayınla</button>
+      <div class="field">
+        <label>Ürün Fotoğrafı</label>
+        <div class="photo-picker">
+          <div class="preview"><img id="editPreview" src="" alt=""></div>
+          <label class="file-btn">
+            Fotoğraf seç / değiştir
+            <input type="file" accept="image/*" id="editPhotoInput">
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Ürün Adı</label>
+        <input type="text" id="editName" placeholder="Örn: Kalın Kare Çerçeve">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Marka (opsiyonel)</label>
+          <input type="text" id="editBrand" placeholder="Örn: Vogue, Ray-Ban">
+        </div>
+        <div class="field">
+          <label>Kategori</label>
+          <select id="editCategory">
+            <option value="sun">Güneş Gözlüğü</option>
+            <option value="optik">Numaralı Gözlük</option>
+            <option value="cocuk">Çocuk Gözlüğü</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Açıklama</label>
+        <input type="text" id="editMeta" placeholder="Örn: Vogue · Kaplan deseni">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Fiyat (₺)</label>
+          <input type="number" min="0" step="1" id="editPrice">
+        </div>
+        <div class="field">
+          <label>Satın Alma Linki (Trendyol)</label>
+          <input type="url" id="editBuyUrl">
+        </div>
+      </div>
+
+      <div class="edit-actions">
+        <button class="btn-ghost" id="cancelEditBtn">Vazgeç</button>
+        <button class="btn-primary" id="saveEditBtn">Kaydet</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-  const CATEGORY_OPTIONS = [
-    { value: 'sun', label: 'Güneş Gözlüğü' },
-    { value: 'optik', label: 'Numaralı Gözlük' },
-    { value: 'cocuk', label: 'Çocuk Gözlüğü' },
-  ];
+  const CATEGORY_LABELS = { sun: 'Güneş Gözlüğü', optik: 'Numaralı Gözlük', cocuk: 'Çocuk Gözlüğü' };
 
   let adminPassword = '';
   let products = [];
-  // rowId -> { file, base64, path } — henüz yüklenmemiş yeni fotoğraflar
-  const pendingImages = new Map();
-  let rowCounter = 0;
+  let editingIndex = null; // null = yeni ürün ekleniyor, sayı = mevcut ürün düzenleniyor
+  let pendingImage = null; // { dataUrl, base64, path } — henüz commit edilmemiş yeni fotoğraf
 
   const loginScreen = document.getElementById('loginScreen');
   const panel = document.getElementById('panel');
   const passwordInput = document.getElementById('passwordInput');
   const loginBtn = document.getElementById('loginBtn');
   const loginError = document.getElementById('loginError');
-  const productList = document.getElementById('productList');
   const statusBar = document.getElementById('statusBar');
+  const listView = document.getElementById('listView');
+  const editView = document.getElementById('editView');
+  const adminGrid = document.getElementById('adminGrid');
 
   function setStatus(kind, message) {
     statusBar.className = 'show ' + kind;
@@ -234,20 +328,19 @@
   async function apiRequest(method, body) {
     const res = await fetch('/.netlify/functions/admin', {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-password': adminPassword,
-      },
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
       body: body ? JSON.stringify(body) : undefined,
     });
-    if (res.status === 401) {
-      throw new Error('AUTH');
-    }
+    if (res.status === 401) throw new Error('AUTH');
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      throw new Error(data.error || ('İstek başarısız (' + res.status + ')'));
-    }
+    if (!res.ok) throw new Error(data.error || ('İstek başarısız (' + res.status + ')'));
     return data;
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
   }
 
   function slugify(str) {
@@ -292,165 +385,134 @@
   }
 
   function emptyProduct() {
-    return { name: '', brand: '', meta: '', category: 'sun', price: 0, image: 'images/placeholder.jpg', buyUrl: 'https://www.trendyol.com/magaza/m-m-461502' };
+    return {
+      name: '', brand: '', meta: '', category: 'sun', price: 0,
+      image: 'images/placeholder.jpg',
+      buyUrl: 'https://www.trendyol.com/magaza/m-m-461502',
+    };
   }
 
-  function render() {
-    productList.innerHTML = '';
-    products.forEach((p, index) => {
-      const rowId = p.__rowId;
-      const pending = pendingImages.get(rowId);
-      const previewSrc = pending ? pending.dataUrl : p.image;
+  function formatPrice(n) { return '₺' + Number(n || 0).toLocaleString('tr-TR'); }
 
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.innerHTML = `
-        <div class="row">
-          <div class="field">
-            <label>Ürün Adı</label>
-            <input type="text" data-field="name" data-index="${index}" value="${escapeAttr(p.name)}" placeholder="Örn: Kalın Kare Çerçeve">
-          </div>
-          <div class="field">
-            <label>Marka (opsiyonel)</label>
-            <input type="text" data-field="brand" data-index="${index}" value="${escapeAttr(p.brand || '')}" placeholder="Örn: Vogue, Ray-Ban">
-          </div>
+  // ---------- LIST VIEW ----------
+  function renderList() {
+    if (products.length === 0) {
+      adminGrid.innerHTML = '<div class="empty-state">Henüz ürün yok. "+ Yeni Ürün" ile ilk ürünü ekle.</div>';
+      return;
+    }
+    adminGrid.innerHTML = products.map((p, index) => `
+      <div class="admin-card">
+        <div class="thumb"><img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy"></div>
+        <div class="body">
+          <span class="cat-pill ${escapeHtml(p.category)}">${escapeHtml(CATEGORY_LABELS[p.category] || p.category)}</span>
+          <h3>${escapeHtml(p.name || '(isimsiz ürün)')}</h3>
+          <p class="meta">${escapeHtml(p.meta || '')}</p>
+          <p class="price">${formatPrice(p.price)}</p>
         </div>
-        <div class="row full">
-          <div class="field">
-            <label>Açıklama</label>
-            <input type="text" data-field="meta" data-index="${index}" value="${escapeAttr(p.meta)}" placeholder="Örn: Vogue · Kaplan deseni">
-          </div>
+        <div class="actions">
+          <button class="btn-ghost" data-edit="${index}">Düzenle</button>
+          <button class="btn-danger" data-delete="${index}">Sil</button>
         </div>
-        <div class="row">
-          <div class="field">
-            <label>Kategori</label>
-            <select data-field="category" data-index="${index}">
-              ${CATEGORY_OPTIONS.map(o => `<option value="${o.value}"${p.category === o.value ? ' selected' : ''}>${o.label}</option>`).join('')}
-            </select>
-          </div>
-          <div class="field">
-            <label>Fiyat (₺)</label>
-            <input type="number" min="0" step="1" data-field="price" data-index="${index}" value="${Number(p.price) || 0}">
-          </div>
-        </div>
-        <div class="row full">
-          <div class="field">
-            <label>Satın Alma Linki (Trendyol)</label>
-            <input type="url" data-field="buyUrl" data-index="${index}" value="${escapeAttr(p.buyUrl)}">
-          </div>
-        </div>
-        <div class="card-footer">
-          <div class="thumb-row">
-            <img src="${escapeAttr(previewSrc)}" alt="" data-thumb="${index}">
-            <label class="file-btn">
-              Fotoğraf değiştir
-              <input type="file" accept="image/*" data-photo-index="${index}">
-            </label>
-          </div>
-          <button class="btn-danger" data-remove="${index}">Ürünü Sil</button>
-        </div>
-      `;
-      productList.appendChild(card);
-    });
+      </div>
+    `).join('');
 
-    productList.querySelectorAll('input[data-field], select[data-field]').forEach((el) => {
-      el.addEventListener('input', onFieldChange);
-      el.addEventListener('change', onFieldChange);
+    adminGrid.querySelectorAll('button[data-edit]').forEach((btn) => {
+      btn.addEventListener('click', () => openEdit(Number(btn.dataset.edit)));
     });
-    productList.querySelectorAll('input[data-photo-index]').forEach((el) => {
-      el.addEventListener('change', onPhotoChange);
-    });
-    productList.querySelectorAll('button[data-remove]').forEach((el) => {
-      el.addEventListener('click', onRemoveClick);
+    adminGrid.querySelectorAll('button[data-delete]').forEach((btn) => {
+      btn.addEventListener('click', () => deleteProduct(Number(btn.dataset.delete)));
     });
   }
 
-  function escapeAttr(str) {
-    return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[c]));
+  function showList() {
+    editView.style.display = 'none';
+    listView.style.display = 'block';
+    clearStatus();
   }
 
-  function onFieldChange(e) {
-    const index = Number(e.target.dataset.index);
-    const field = e.target.dataset.field;
-    let value = e.target.value;
-    if (field === 'price') value = Number(value) || 0;
-    products[index][field] = value;
+  // ---------- EDIT VIEW ----------
+  const editTitle = document.getElementById('editTitle');
+  const editPreview = document.getElementById('editPreview');
+  const editPhotoInput = document.getElementById('editPhotoInput');
+  const editName = document.getElementById('editName');
+  const editBrand = document.getElementById('editBrand');
+  const editCategory = document.getElementById('editCategory');
+  const editMeta = document.getElementById('editMeta');
+  const editPrice = document.getElementById('editPrice');
+  const editBuyUrl = document.getElementById('editBuyUrl');
+
+  function openEdit(index) {
+    editingIndex = index;
+    pendingImage = null;
+    const p = index === null ? emptyProduct() : products[index];
+    editTitle.textContent = index === null ? 'Yeni Ürün Ekle' : 'Ürünü Düzenle';
+    editPreview.src = p.image;
+    editName.value = p.name || '';
+    editBrand.value = p.brand || '';
+    editCategory.value = p.category || 'sun';
+    editMeta.value = p.meta || '';
+    editPrice.value = Number(p.price) || 0;
+    editBuyUrl.value = p.buyUrl || 'https://www.trendyol.com/magaza/m-m-461502';
+    editPhotoInput.value = '';
+    listView.style.display = 'none';
+    editView.style.display = 'block';
+    clearStatus();
+    window.scrollTo({ top: 0 });
   }
 
-  async function onPhotoChange(e) {
-    const index = Number(e.target.dataset.photoIndex);
-    const file = e.target.files[0];
+  document.getElementById('addBtn').addEventListener('click', () => openEdit(null));
+  document.getElementById('backBtn').addEventListener('click', showList);
+  document.getElementById('cancelEditBtn').addEventListener('click', showList);
+
+  editPhotoInput.addEventListener('change', async () => {
+    const file = editPhotoInput.files[0];
     if (!file) return;
     try {
       const { dataUrl, base64 } = await resizeImageFile(file, 1600, 0.82);
-      const rowId = products[index].__rowId;
-      const path = 'images/' + slugify(products[index].name || 'urun') + '-' + Date.now() + '.jpg';
-      pendingImages.set(rowId, { dataUrl, base64, path });
-      products[index].image = path;
-      render();
+      const path = 'images/' + slugify(editName.value) + '-' + Date.now() + '.jpg';
+      pendingImage = { dataUrl, base64, path };
+      editPreview.src = dataUrl;
     } catch (err) {
       setStatus('error', 'Fotoğraf işlenemedi: ' + err.message);
     }
-  }
-
-  function onRemoveClick(e) {
-    const index = Number(e.target.dataset.remove);
-    const name = products[index].name || 'bu ürün';
-    if (!confirm(`"${name}" silinsin mi?`)) return;
-    pendingImages.delete(products[index].__rowId);
-    products.splice(index, 1);
-    render();
-  }
-
-  document.getElementById('addBtn').addEventListener('click', () => {
-    const p = emptyProduct();
-    p.__rowId = 'row-' + (rowCounter++);
-    products.push(p);
-    render();
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   });
 
-  document.getElementById('reloadBtn').addEventListener('click', () => {
-    if (!confirm('Kaydedilmemiş değişiklikler silinecek. Emin misin?')) return;
-    loadProducts();
-  });
-
-  document.getElementById('saveBtn').addEventListener('click', saveProducts);
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    adminPassword = '';
-    panel.style.display = 'none';
-    loginScreen.style.display = 'flex';
-    passwordInput.value = '';
-  });
-
-  async function loadProducts() {
-    setStatus('info', 'Ürünler yükleniyor…');
-    try {
-      const data = await apiRequest('GET');
-      products = (data.products || []).map((p) => ({ ...p, __rowId: 'row-' + (rowCounter++) }));
-      pendingImages.clear();
-      clearStatus();
-      render();
-    } catch (err) {
-      if (err.message === 'AUTH') return handleAuthFailure();
-      setStatus('error', 'Ürünler yüklenemedi: ' + err.message);
+  async function saveEdit() {
+    if (!editName.value.trim()) {
+      setStatus('error', 'Ürün adı boş olamaz.');
+      return;
     }
-  }
+    const existingImage = editingIndex === null
+      ? emptyProduct().image
+      : products[editingIndex].image;
 
-  async function saveProducts() {
-    const saveBtn = document.getElementById('saveBtn');
+    const draft = {
+      name: editName.value.trim(),
+      brand: editBrand.value.trim(),
+      meta: editMeta.value.trim(),
+      category: editCategory.value,
+      price: Number(editPrice.value) || 0,
+      image: pendingImage ? pendingImage.path : existingImage,
+      buyUrl: editBuyUrl.value.trim(),
+    };
+
+    const newProducts = [...products];
+    if (editingIndex === null) {
+      newProducts.push(draft);
+    } else {
+      newProducts[editingIndex] = draft;
+    }
+
+    const saveBtn = document.getElementById('saveEditBtn');
     saveBtn.disabled = true;
     setStatus('info', 'Kaydediliyor…');
     try {
-      const newImages = [];
-      for (const [, img] of pendingImages) {
-        newImages.push({ path: img.path, base64: img.base64 });
-      }
-      const cleanProducts = products.map(({ __rowId, ...rest }) => rest);
-      await apiRequest('POST', { products: cleanProducts, newImages });
-      pendingImages.clear();
+      const newImages = pendingImage ? [{ path: pendingImage.path, base64: pendingImage.base64 }] : [];
+      await apiRequest('POST', { products: newProducts, newImages });
+      products = newProducts;
+      pendingImage = null;
+      showList();
+      renderList();
       setStatus('success', 'Kaydedildi. Site birkaç dakika içinde otomatik olarak güncellenecek.');
     } catch (err) {
       if (err.message === 'AUTH') return handleAuthFailure();
@@ -459,6 +521,30 @@
       saveBtn.disabled = false;
     }
   }
+  document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
+
+  async function deleteProduct(index) {
+    const name = products[index].name || 'bu ürün';
+    if (!confirm(`"${name}" silinsin mi? Bu işlem geri alınamaz.`)) return;
+    const newProducts = products.filter((_, i) => i !== index);
+    setStatus('info', 'Siliniyor…');
+    try {
+      await apiRequest('POST', { products: newProducts, newImages: [] });
+      products = newProducts;
+      renderList();
+      setStatus('success', 'Ürün silindi. Site birkaç dakika içinde otomatik olarak güncellenecek.');
+    } catch (err) {
+      if (err.message === 'AUTH') return handleAuthFailure();
+      setStatus('error', 'Silinemedi: ' + err.message);
+    }
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    adminPassword = '';
+    panel.style.display = 'none';
+    loginScreen.style.display = 'flex';
+    passwordInput.value = '';
+  });
 
   function handleAuthFailure() {
     panel.style.display = 'none';
@@ -473,10 +559,11 @@
     loginBtn.textContent = 'Kontrol ediliyor…';
     try {
       const data = await apiRequest('GET');
-      products = (data.products || []).map((p) => ({ ...p, __rowId: 'row-' + (rowCounter++) }));
+      products = data.products || [];
       loginScreen.style.display = 'none';
       panel.style.display = 'block';
-      render();
+      showList();
+      renderList();
     } catch (err) {
       loginError.textContent = err.message === 'AUTH' ? 'Şifre hatalı.' : ('Bağlantı hatası: ' + err.message);
     } finally {
@@ -486,9 +573,7 @@
   }
 
   loginBtn.addEventListener('click', attemptLogin);
-  passwordInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') attemptLogin();
-  });
+  passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') attemptLogin(); });
 </script>
 </body>
 </html>
