@@ -1,24 +1,494 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MMETGÖZ OPTİK — Ürün Yönetimi</title>
-  <meta name="robots" content="noindex">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>MMETGÖZ OPTİK — Ürün Yönetimi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F8F4E9;
+    --paper-alt: #EFE8D6;
+    --ink: #1E1B15;
+    --ink-soft: #524B3E;
+    --amber: #A66A2D;
+    --teal: #33594F;
+    --line: rgba(30,27,21,0.18);
+    --danger: #A6392D;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
+  }
+  h1, h2 { font-family: 'Fraunces', Georgia, serif; margin: 0; font-weight: 600; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* ---------- Login ---------- */
+  #loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .login-card {
+    background: var(--paper-alt);
+    border-radius: 6px;
+    padding: 36px 32px;
+    max-width: 360px;
+    width: 100%;
+  }
+  .login-card h1 { font-size: 1.4rem; margin-bottom: 8px; }
+  .login-card p { color: var(--ink-soft); font-size: 0.92rem; margin: 0 0 20px; }
+
+  input[type="password"], input[type="text"], input[type="number"], input[type="url"], select {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
+  input:focus, select:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 11px 20px;
+  }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--amber); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+  .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 8px 14px; font-size: 0.85rem; }
+  .btn-danger:hover { background: var(--danger); color: #fff; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .login-card button { width: 100%; margin-top: 6px; }
+  .login-error { color: var(--danger); font-size: 0.88rem; margin-top: 10px; min-height: 1.2em; }
+
+  /* ---------- Panel ---------- */
+  #panel { display: none; }
+  header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  header.top h1 { font-size: 1.3rem; }
+  header.top p { color: var(--ink-soft); font-size: 0.88rem; margin: 4px 0 0; }
+
+  #statusBar {
+    margin: 18px 0;
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  #statusBar.show { display: block; }
+  #statusBar.info { background: var(--paper-alt); color: var(--ink-soft); }
+  #statusBar.success { background: #E4EEE8; color: var(--teal); }
+  #statusBar.error { background: #F4E3E0; color: var(--danger); }
+
+  .toolbar { display: flex; gap: 12px; margin: 22px 0; flex-wrap: wrap; }
+
+  .product-card {
+    background: var(--paper-alt);
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .product-card .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .product-card .row.full { grid-template-columns: 1fr; }
+  .product-card label {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .product-card .field { min-width: 0; }
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .thumb-row { display: flex; align-items: center; gap: 14px; }
+  .thumb-row img {
+    width: 84px; height: 63px; object-fit: cover; border-radius: 4px;
+    background: var(--paper); border: 1px solid var(--line);
+  }
+  .file-btn {
+    display: inline-block; font-size: 0.85rem; color: var(--ink);
+    text-decoration: underline; cursor: pointer;
+  }
+  .file-btn input { display: none; }
+
+  #saveBar {
+    position: sticky;
+    bottom: 0;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    padding: 16px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin: 0 -20px;
+  }
+
+  @media (max-width: 640px) {
+    .product-card .row { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", (user) => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
+
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>Ürün Yönetimi</h1>
+    <p>MMETGÖZ OPTİK — koleksiyona ürün eklemek, düzenlemek veya kaldırmak için şifreni gir.</p>
+    <input type="password" id="passwordInput" placeholder="Şifre" autocomplete="current-password">
+    <button class="btn-primary" id="loginBtn">Giriş Yap</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<div id="panel">
+  <div class="wrap">
+    <header class="top">
+      <div>
+        <h1>Ürün Yönetimi</h1>
+        <p>Ürün ekle, düzenle veya kaldır. Kaydettiğinde site birkaç dakika içinde otomatik güncellenir.</p>
+      </div>
+      <button class="btn-ghost" id="logoutBtn">Çıkış</button>
+    </header>
+
+    <div id="statusBar"></div>
+
+    <div class="toolbar">
+      <button class="btn-primary" id="addBtn">+ Yeni Ürün</button>
+    </div>
+
+    <div id="productList"></div>
+
+    <div id="saveBar">
+      <button class="btn-ghost" id="reloadBtn">Değişiklikleri Geri Al</button>
+      <button class="btn-primary" id="saveBtn">Kaydet ve Yayınla</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CATEGORY_OPTIONS = [
+    { value: 'sun', label: 'Güneş Gözlüğü' },
+    { value: 'optik', label: 'Numaralı Gözlük' },
+    { value: 'cocuk', label: 'Çocuk Gözlüğü' },
+  ];
+
+  let adminPassword = '';
+  let products = [];
+  // rowId -> { file, base64, path } — henüz yüklenmemiş yeni fotoğraflar
+  const pendingImages = new Map();
+  let rowCounter = 0;
+
+  const loginScreen = document.getElementById('loginScreen');
+  const panel = document.getElementById('panel');
+  const passwordInput = document.getElementById('passwordInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+  const productList = document.getElementById('productList');
+  const statusBar = document.getElementById('statusBar');
+
+  function setStatus(kind, message) {
+    statusBar.className = 'show ' + kind;
+    statusBar.textContent = message;
+  }
+  function clearStatus() {
+    statusBar.className = '';
+    statusBar.textContent = '';
+  }
+
+  async function apiRequest(method, body) {
+    const res = await fetch('/.netlify/functions/admin', {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-password': adminPassword,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (res.status === 401) {
+      throw new Error('AUTH');
     }
-  </script>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || ('İstek başarısız (' + res.status + ')'));
+    }
+    return data;
+  }
+
+  function slugify(str) {
+    return String(str)
+      .toLowerCase()
+      .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
+      .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-+|-+$)/g, '') || 'urun';
+  }
+
+  function resizeImageFile(file, maxDim, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Dosya okunamadı'));
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('Görsel işlenemedi'));
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > height && width > maxDim) {
+            height = Math.round(height * (maxDim / width));
+            width = maxDim;
+          } else if (height >= width && height > maxDim) {
+            width = Math.round(width * (maxDim / height));
+            height = maxDim;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, width, height);
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve({ dataUrl, base64: dataUrl.split(',')[1] });
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function emptyProduct() {
+    return { name: '', brand: '', meta: '', category: 'sun', price: 0, image: 'images/placeholder.jpg', buyUrl: 'https://www.trendyol.com/magaza/m-m-461502' };
+  }
+
+  function render() {
+    productList.innerHTML = '';
+    products.forEach((p, index) => {
+      const rowId = p.__rowId;
+      const pending = pendingImages.get(rowId);
+      const previewSrc = pending ? pending.dataUrl : p.image;
+
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <div class="row">
+          <div class="field">
+            <label>Ürün Adı</label>
+            <input type="text" data-field="name" data-index="${index}" value="${escapeAttr(p.name)}" placeholder="Örn: Kalın Kare Çerçeve">
+          </div>
+          <div class="field">
+            <label>Marka (opsiyonel)</label>
+            <input type="text" data-field="brand" data-index="${index}" value="${escapeAttr(p.brand || '')}" placeholder="Örn: Vogue, Ray-Ban">
+          </div>
+        </div>
+        <div class="row full">
+          <div class="field">
+            <label>Açıklama</label>
+            <input type="text" data-field="meta" data-index="${index}" value="${escapeAttr(p.meta)}" placeholder="Örn: Vogue · Kaplan deseni">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Kategori</label>
+            <select data-field="category" data-index="${index}">
+              ${CATEGORY_OPTIONS.map(o => `<option value="${o.value}"${p.category === o.value ? ' selected' : ''}>${o.label}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>Fiyat (₺)</label>
+            <input type="number" min="0" step="1" data-field="price" data-index="${index}" value="${Number(p.price) || 0}">
+          </div>
+        </div>
+        <div class="row full">
+          <div class="field">
+            <label>Satın Alma Linki (Trendyol)</label>
+            <input type="url" data-field="buyUrl" data-index="${index}" value="${escapeAttr(p.buyUrl)}">
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="thumb-row">
+            <img src="${escapeAttr(previewSrc)}" alt="" data-thumb="${index}">
+            <label class="file-btn">
+              Fotoğraf değiştir
+              <input type="file" accept="image/*" data-photo-index="${index}">
+            </label>
+          </div>
+          <button class="btn-danger" data-remove="${index}">Ürünü Sil</button>
+        </div>
+      `;
+      productList.appendChild(card);
+    });
+
+    productList.querySelectorAll('input[data-field], select[data-field]').forEach((el) => {
+      el.addEventListener('input', onFieldChange);
+      el.addEventListener('change', onFieldChange);
+    });
+    productList.querySelectorAll('input[data-photo-index]').forEach((el) => {
+      el.addEventListener('change', onPhotoChange);
+    });
+    productList.querySelectorAll('button[data-remove]').forEach((el) => {
+      el.addEventListener('click', onRemoveClick);
+    });
+  }
+
+  function escapeAttr(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function onFieldChange(e) {
+    const index = Number(e.target.dataset.index);
+    const field = e.target.dataset.field;
+    let value = e.target.value;
+    if (field === 'price') value = Number(value) || 0;
+    products[index][field] = value;
+  }
+
+  async function onPhotoChange(e) {
+    const index = Number(e.target.dataset.photoIndex);
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const { dataUrl, base64 } = await resizeImageFile(file, 1600, 0.82);
+      const rowId = products[index].__rowId;
+      const path = 'images/' + slugify(products[index].name || 'urun') + '-' + Date.now() + '.jpg';
+      pendingImages.set(rowId, { dataUrl, base64, path });
+      products[index].image = path;
+      render();
+    } catch (err) {
+      setStatus('error', 'Fotoğraf işlenemedi: ' + err.message);
+    }
+  }
+
+  function onRemoveClick(e) {
+    const index = Number(e.target.dataset.remove);
+    const name = products[index].name || 'bu ürün';
+    if (!confirm(`"${name}" silinsin mi?`)) return;
+    pendingImages.delete(products[index].__rowId);
+    products.splice(index, 1);
+    render();
+  }
+
+  document.getElementById('addBtn').addEventListener('click', () => {
+    const p = emptyProduct();
+    p.__rowId = 'row-' + (rowCounter++);
+    products.push(p);
+    render();
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  });
+
+  document.getElementById('reloadBtn').addEventListener('click', () => {
+    if (!confirm('Kaydedilmemiş değişiklikler silinecek. Emin misin?')) return;
+    loadProducts();
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', saveProducts);
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    adminPassword = '';
+    panel.style.display = 'none';
+    loginScreen.style.display = 'flex';
+    passwordInput.value = '';
+  });
+
+  async function loadProducts() {
+    setStatus('info', 'Ürünler yükleniyor…');
+    try {
+      const data = await apiRequest('GET');
+      products = (data.products || []).map((p) => ({ ...p, __rowId: 'row-' + (rowCounter++) }));
+      pendingImages.clear();
+      clearStatus();
+      render();
+    } catch (err) {
+      if (err.message === 'AUTH') return handleAuthFailure();
+      setStatus('error', 'Ürünler yüklenemedi: ' + err.message);
+    }
+  }
+
+  async function saveProducts() {
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.disabled = true;
+    setStatus('info', 'Kaydediliyor…');
+    try {
+      const newImages = [];
+      for (const [, img] of pendingImages) {
+        newImages.push({ path: img.path, base64: img.base64 });
+      }
+      const cleanProducts = products.map(({ __rowId, ...rest }) => rest);
+      await apiRequest('POST', { products: cleanProducts, newImages });
+      pendingImages.clear();
+      setStatus('success', 'Kaydedildi. Site birkaç dakika içinde otomatik olarak güncellenecek.');
+    } catch (err) {
+      if (err.message === 'AUTH') return handleAuthFailure();
+      setStatus('error', 'Kaydedilemedi: ' + err.message);
+    } finally {
+      saveBtn.disabled = false;
+    }
+  }
+
+  function handleAuthFailure() {
+    panel.style.display = 'none';
+    loginScreen.style.display = 'flex';
+    loginError.textContent = 'Şifre hatalı veya oturum sona erdi, tekrar gir.';
+  }
+
+  async function attemptLogin() {
+    adminPassword = passwordInput.value;
+    loginError.textContent = '';
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Kontrol ediliyor…';
+    try {
+      const data = await apiRequest('GET');
+      products = (data.products || []).map((p) => ({ ...p, __rowId: 'row-' + (rowCounter++) }));
+      loginScreen.style.display = 'none';
+      panel.style.display = 'block';
+      render();
+    } catch (err) {
+      loginError.textContent = err.message === 'AUTH' ? 'Şifre hatalı.' : ('Bağlantı hatası: ' + err.message);
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Giriş Yap';
+    }
+  }
+
+  loginBtn.addEventListener('click', attemptLogin);
+  passwordInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') attemptLogin();
+  });
+</script>
 </body>
 </html>
