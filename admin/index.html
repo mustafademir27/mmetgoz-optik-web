@@ -616,32 +616,39 @@
     }
   }
 
+  const SESSION_KEY = 'mmetgoz_admin_pw';
+
   document.getElementById('logoutBtn').addEventListener('click', () => {
     adminPassword = '';
+    try { sessionStorage.removeItem(SESSION_KEY); } catch {}
     panel.style.display = 'none';
     loginScreen.style.display = 'flex';
     passwordInput.value = '';
   });
 
   function handleAuthFailure() {
+    adminPassword = '';
+    try { sessionStorage.removeItem(SESSION_KEY); } catch {}
     panel.style.display = 'none';
     loginScreen.style.display = 'flex';
     loginError.textContent = 'Şifre hatalı veya oturum sona erdi, tekrar gir.';
   }
 
-  async function attemptLogin() {
-    adminPassword = passwordInput.value;
+  async function attemptLogin(candidatePassword) {
+    adminPassword = candidatePassword != null ? candidatePassword : passwordInput.value;
     loginError.textContent = '';
     loginBtn.disabled = true;
     loginBtn.textContent = 'Kontrol ediliyor…';
     try {
       const data = await apiRequest('GET');
       products = data.products || [];
+      try { sessionStorage.setItem(SESSION_KEY, adminPassword); } catch {}
       loginScreen.style.display = 'none';
       panel.style.display = 'block';
       showList();
       renderList();
     } catch (err) {
+      try { sessionStorage.removeItem(SESSION_KEY); } catch {}
       loginError.textContent = err.message === 'AUTH' ? 'Şifre hatalı.' : ('Bağlantı hatası: ' + err.message);
     } finally {
       loginBtn.disabled = false;
@@ -649,8 +656,15 @@
     }
   }
 
-  loginBtn.addEventListener('click', attemptLogin);
+  loginBtn.addEventListener('click', () => attemptLogin());
   passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') attemptLogin(); });
+
+  // Sekme kapanana kadar oturumu hatırla: sayfa yenilendiğinde tekrar şifre sormaz.
+  (function tryRestoreSession() {
+    let saved = null;
+    try { saved = sessionStorage.getItem(SESSION_KEY); } catch {}
+    if (saved) attemptLogin(saved);
+  })();
 
   const toTopBtn = document.querySelector('.to-top');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
