@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MMETGÖZ OPTİK — Çerçeve Koleksiyonu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #ECE7DC;
+    --paper-alt: #E0DACB;
+    --ink: #1E1B15;
+    --ink-soft: #524B3E;
+    --amber: #A66A2D;
+    --teal: #33594F;
+    --line: rgba(30,27,21,0.18);
+    --radius-lens: 999px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #17150F;
+      --paper-alt: #201C14;
+      --ink: #F3EFE4;
+      --ink-soft: #C9C1AE;
+      --amber: #D69B57;
+      --teal: #7BB6A7;
+      --line: rgba(243,239,228,0.18);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #17150F;
+    --paper-alt: #201C14;
+    --ink: #F3EFE4;
+    --ink-soft: #C9C1AE;
+    --amber: #D69B57;
+    --teal: #7BB6A7;
+    --line: rgba(243,239,228,0.18);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+
+  a { color: inherit; }
+  button { font-family: inherit; cursor: pointer; }
+
+  :focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- Nav ---------- */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Fraunces', serif;
+    font-size: 1.28rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .brand svg { width: 34px; height: 20px; flex-shrink: 0; }
+  .nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-links a {
+    text-decoration: none;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 3px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .nav-links a:hover { color: var(--ink); border-color: var(--amber); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 72px 0 88px;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .hero h1 {
+    font-size: clamp(2.3rem, 4.6vw, 3.6rem);
+    line-height: 1.08;
+  }
+  .hero p.lede {
+    margin: 22px 0 30px;
+    max-width: 46ch;
+    color: var(--ink-soft);
+    font-size: 1.08rem;
+  }
+  .btn {
+    display: inline-block;
+    padding: 13px 26px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: 1px solid var(--ink);
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--amber); border-color: var(--amber); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--ink); margin-left: 14px; }
+  .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+
+  .hero-art { display: flex; justify-content: center; }
+  .hero-art svg { width: 100%; max-width: 380px; height: auto; }
+  .hero-art .frame-line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 900;
+    stroke-dashoffset: 900;
+    animation: draw 1.6s ease forwards 0.2s;
+  }
+  .hero-art .lens-tint { fill: var(--amber); opacity: 0; animation: fadeIn 0.8s ease forwards 1.4s; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes fadeIn { to { opacity: 0.22; } }
+
+  /* ---------- Section shells ---------- */
+  section { padding: 64px 0; }
+  .section-head { margin-bottom: 40px; max-width: 60ch; }
+  .section-head p { color: var(--ink-soft); margin-top: 10px; }
+  hr.rule { border: none; border-top: 1px solid var(--line); margin: 0; }
+
+  /* ---------- Filter tabs ---------- */
+  .filters {
+    display: flex;
+    gap: 26px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0;
+  }
+  .filters button {
+    background: none;
+    border: none;
+    padding: 8px 2px 14px;
+    font-size: 0.98rem;
+    color: var(--ink-soft);
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .filters button:hover { color: var(--ink); }
+  .filters button.active { color: var(--ink); border-color: var(--amber); font-weight: 500; }
+
+  /* ---------- Product grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 34px 28px;
+  }
+  .card {
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+    display: flex;
+    flex-direction: column;
+  }
+  .card-art {
+    background: var(--paper-alt);
+    border-radius: 4px;
+    padding: 26px 18px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .card-art svg { width: 100%; max-width: 200px; height: auto; }
+  .card-art svg .fr { fill: none; stroke: var(--ink); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  .card-art svg .fr-tint { fill: currentColor; opacity: 0.28; stroke: none; }
+  .card.cat-sun .card-art svg { color: var(--amber); }
+  .card.cat-optik .card-art svg { color: transparent; }
+  .card.cat-cocuk .card-art svg { color: var(--teal); }
+  .card-art.photo { padding: 0; overflow: hidden; aspect-ratio: 4 / 3; }
+  .card-art.photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+
+  .card h3 { font-size: 1.08rem; font-weight: 500; margin-bottom: 4px; }
+  .card .meta { color: var(--ink-soft); font-size: 0.9rem; margin-bottom: 10px; }
+  .card .price { font-size: 0.98rem; margin-bottom: 16px; }
+  .card .buy {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    background: transparent;
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    color: var(--ink);
+    width: fit-content;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .card .buy:hover { background: var(--ink); color: var(--paper); }
+
+  .card[hidden] { display: none; }
+
+  /* ---------- About ---------- */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .about p {
+    font-family: 'Fraunces', serif;
+    font-size: 1.18rem;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .about p + p { margin-top: 16px; color: var(--ink-soft); font-size: 1.02rem; font-family: 'Inter', sans-serif; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .stat b { display: block; font-family: 'Fraunces', serif; font-size: 2.1rem; font-weight: 600; }
+  .stat span { color: var(--ink-soft); font-size: 0.9rem; }
+
+  /* ---------- Contact ---------- */
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .contact-card {
+    background: var(--paper-alt);
+    border-radius: 4px;
+    padding: 30px;
+  }
+  .contact-card h3 { margin-bottom: 18px; font-size: 1.2rem; }
+  .contact-line { display: flex; gap: 12px; margin-bottom: 14px; font-size: 0.96rem; }
+  .contact-line svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+  .map-card {
+    background: var(--paper-alt);
+    border-radius: 4px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .map-visual {
+    height: 140px;
+    border-radius: 3px;
+    border: 1px dashed var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    margin-bottom: 18px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 36px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+  }
+  .social { display: flex; gap: 14px; }
+  .social a { display: flex; }
+  .social svg { width: 19px; height: 19px; }
+
+  /* ---------- WhatsApp float ---------- */
+  .wa-float {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    background: #2F6E58;
+    color: #fff;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    z-index: 50;
+  }
+  .wa-float svg { width: 26px; height: 26px; }
+
+  @media (max-width: 880px) {
+    .hero { grid-template-columns: 1fr; padding-top: 44px; }
+    .hero-art { order: -1; max-width: 240px; margin: 0 auto; }
+    .about, .contact { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .nav-links { gap: 18px; }
+  }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr 1fr; gap: 24px 16px; }
+    .wrap { padding: 0 18px; }
+    section { padding: 46px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="wrap">
+    <a class="brand" href="#">
+      <svg viewBox="0 0 240 110" aria-hidden="true"><g class="fr" style="fill:none;stroke:var(--ink);stroke-width:9">
+        <circle cx="62" cy="55" r="42"/><circle cx="178" cy="55" r="42"/>
+        <path d="M104 55 h32"/><path d="M20 55 C4 48 0 38 0 26"/><path d="M220 55 C236 48 240 38 240 26"/>
+      </g></svg>
+      MMETGÖZ OPTİK
+    </a>
+    <ul class="nav-links">
+      <li><a href="#koleksiyon">Koleksiyon</a></li>
+      <li><a href="#hakkimizda">Hakkımızda</a></li>
+      <li><a href="#iletisim">İletişim</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <div>
+      <h1>Yüzünüze uyan çerçeveyi burada bulun.</h1>
+      <p class="lede">Güneş gözlüğünden numaralı çerçeveye, elde denediğiniz her modeli tek dokunuşla satın alabileceğiniz sayfaya yönlendiriyoruz.</p>
+      <a href="#koleksiyon" class="btn btn-primary">Koleksiyonu Gör</a>
+      <a href="#iletisim" class="btn btn-ghost">Dükkanı Ziyaret Et</a>
+    </div>
+    <div class="hero-art">
+      <svg viewBox="0 0 300 140" aria-hidden="true">
+        <g class="frame-line">
+          <circle cx="82" cy="68" r="52"/>
+          <circle cx="218" cy="68" r="52"/>
+          <path d="M134 68 h32"/>
+          <path d="M30 68 C10 58 4 44 4 28"/>
+          <path d="M270 68 C290 58 296 44 296 28"/>
+        </g>
+        <circle class="lens-tint" cx="82" cy="68" r="46"/>
+        <circle class="lens-tint" cx="218" cy="68" r="46"/>
+      </svg>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="koleksiyon" class="wrap">
+    <div class="section-head">
+      <h2>Koleksiyon</h2>
+      <p>Dükkanda yerinde deneyin, beğendiğiniz modeli Trendyol üzerinden sipariş edin.</p>
+    </div>
+
+    <div class="filters" role="tablist" aria-label="Kategori filtrele">
+      <button class="active" data-filter="all">Tümü</button>
+      <button data-filter="sun">Güneş Gözlüğü</button>
+      <button data-filter="optik">Numaralı Gözlük</button>
+      <button data-filter="cocuk">Çocuk Gözlüğü</button>
+    </div>
+
+    <div class="grid" id="productGrid">
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/vogue-cateye-tortoise-01.jpg" alt="Vogue kalın kare çerçeve, kaplan deseni" loading="lazy"></div>
+        <h3>Kalın Kare Çerçeve</h3>
+        <p class="meta">Vogue · Kaplan deseni</p>
+        <p class="price">₺1.450</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/vogue-cateye-grey-pink-02.jpg" alt="Vogue kalın kare çerçeve, gri desen pembe sap" loading="lazy"></div>
+        <h3>Kontrast Sap Detaylı Çerçeve</h3>
+        <p class="meta">Vogue · Gri desen / Pembe</p>
+        <p class="price">₺1.450</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/vogue-cateye-pink-tortoise-03.jpg" alt="Vogue şeffaf pembe çerçeve, kaplan desen sap" loading="lazy"></div>
+        <h3>Şeffaf Pembe Çerçeve</h3>
+        <p class="meta">Vogue · Şeffaf pembe / Kaplan deseni sap</p>
+        <p class="price">₺1.550</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/vogue-cateye-brown-tortoise-04.jpg" alt="Vogue kahverengi kaplan desenli çerçeve" loading="lazy"></div>
+        <h3>Kaplan Desenli Çerçeve</h3>
+        <p class="meta">Vogue · Kahverengi</p>
+        <p class="price">₺1.450</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/vogue-oval-teal-pink-05.jpg" alt="Vogue oval çerçeve, turkuaz gövde pembe cam" loading="lazy"></div>
+        <h3>Oval Renkli Çerçeve</h3>
+        <p class="meta">Vogue · Turkuaz / Pembe cam</p>
+        <p class="price">₺1.250</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/vogue-oval-ivory-06.jpg" alt="Vogue oval çerçeve, fildişi gövde kahverengi cam" loading="lazy"></div>
+        <h3>Oval Fildişi Çerçeve</h3>
+        <p class="meta">Vogue · Fildişi</p>
+        <p class="price">₺1.250</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/vogue-oval-magenta-07.jpg" alt="Vogue oval çerçeve, magenta gövde" loading="lazy"></div>
+        <h3>Oval Magenta Çerçeve</h3>
+        <p class="meta">Vogue · Magenta</p>
+        <p class="price">₺1.250</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/vogue-oval-grey-tortoise-08.jpg" alt="Vogue oval çerçeve, gri kaplan desen" loading="lazy"></div>
+        <h3>Oval Kaplan Desenli Çerçeve</h3>
+        <p class="meta">Vogue · Gri desen</p>
+        <p class="price">₺1.350</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/rayban-aviator-tortoise-09.jpg" alt="Ray-Ban düz üst aviator, kaplan desen" loading="lazy"></div>
+        <h3>Flat Top Aviator</h3>
+        <p class="meta">Ray-Ban · Kaplan deseni</p>
+        <p class="price">₺2.850</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-sun" data-cat="sun">
+        <div class="card-art photo"><img src="images/rayban-round-double-bridge-10.jpg" alt="Ray-Ban yuvarlak çift köprülü çerçeve, siyah altın" loading="lazy"></div>
+        <h3>Çift Köprülü Yuvarlak Çerçeve</h3>
+        <p class="meta">Ray-Ban · Siyah / Altın</p>
+        <p class="price">₺2.650</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-optik" data-cat="optik">
+        <div class="card-art">
+          <svg viewBox="0 0 240 110" aria-hidden="true">
+            <g class="fr" style="stroke:var(--teal)">
+              <path d="M22 62 Q16 22 62 18 Q106 15 106 50 Q106 74 62 78 Q22 78 22 62 Z"/>
+              <path d="M218 62 Q224 22 178 18 Q134 15 134 50 Q134 74 178 78 Q218 74 218 62 Z"/>
+              <path d="M106 46 h28"/>
+              <path d="M22 34 C8 28 2 20 0 10"/>
+              <path d="M218 34 C232 28 238 20 240 10"/>
+            </g>
+          </svg>
+        </div>
+        <h3>Kelebek Çerçeve</h3>
+        <p class="meta">Asetat çerçeve · Bordo</p>
+        <p class="price">₺720</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-optik" data-cat="optik">
+        <div class="card-art">
+          <svg viewBox="0 0 240 110" aria-hidden="true">
+            <g class="fr" style="stroke:var(--teal)">
+              <rect x="18" y="14" width="94" height="74" rx="12"/>
+              <rect x="128" y="14" width="94" height="74" rx="12"/>
+              <path d="M112 51 h16"/>
+              <path d="M18 36 C4 30 0 20 0 10"/>
+              <path d="M222 36 C236 30 240 20 240 10"/>
+            </g>
+          </svg>
+        </div>
+        <h3>Dikdörtgen Çerçeve</h3>
+        <p class="meta">Titanyum çerçeve · Mat siyah</p>
+        <p class="price">₺890</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-optik" data-cat="optik">
+        <div class="card-art">
+          <svg viewBox="0 0 240 110" aria-hidden="true">
+            <g class="fr" style="stroke:var(--teal)">
+              <circle cx="62" cy="55" r="42"/><circle cx="178" cy="55" r="42"/>
+              <path d="M104 55 h32"/><path d="M20 55 C4 48 0 38 0 26"/><path d="M220 55 C236 48 240 38 240 26"/>
+            </g>
+          </svg>
+        </div>
+        <h3>Yuvarlak Çerçeve</h3>
+        <p class="meta">İnce metal çerçeve · Gümüş</p>
+        <p class="price">₺610</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-cocuk" data-cat="cocuk">
+        <div class="card-art">
+          <svg viewBox="0 0 240 110" aria-hidden="true">
+            <g class="fr" style="stroke:var(--teal)">
+              <circle cx="66" cy="55" r="36"/><circle cx="174" cy="55" r="36"/>
+              <path d="M102 55 h36"/><path d="M30 55 C16 48 8 38 8 28"/><path d="M210 55 C224 48 232 38 232 28"/>
+            </g>
+          </svg>
+        </div>
+        <h3>Yuvarlak Çocuk Çerçevesi</h3>
+        <p class="meta">Esnek malzeme · Mavi</p>
+        <p class="price">₺390</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-cocuk" data-cat="cocuk">
+        <div class="card-art">
+          <svg viewBox="0 0 240 110" aria-hidden="true">
+            <g class="fr" style="stroke:var(--teal)">
+              <rect x="24" y="18" width="80" height="64" rx="20"/>
+              <rect x="136" y="18" width="80" height="64" rx="20"/>
+              <path d="M104 50 h32"/>
+              <path d="M24 36 C12 32 6 24 6 14"/>
+              <path d="M216 36 C228 32 234 24 234 14"/>
+            </g>
+          </svg>
+        </div>
+        <h3>Kare Çocuk Çerçevesi</h3>
+        <p class="meta">Esnek malzeme · Sarı</p>
+        <p class="price">₺390</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+      <article class="card cat-cocuk" data-cat="cocuk">
+        <div class="card-art">
+          <svg viewBox="0 0 240 110" aria-hidden="true">
+            <g class="fr" style="stroke:var(--teal)">
+              <path d="M22 62 Q16 22 62 18 Q106 15 106 50 Q106 74 62 78 Q22 78 22 62 Z"/>
+              <path d="M218 62 Q224 22 178 18 Q134 15 134 50 Q134 74 178 78 Q218 74 218 62 Z"/>
+              <path d="M106 46 h28"/>
+              <path d="M22 34 C8 28 2 20 0 10"/>
+              <path d="M218 34 C232 28 238 20 240 10"/>
+            </g>
+          </svg>
+        </div>
+        <h3>Kelebek Çocuk Çerçevesi</h3>
+        <p class="meta">Esnek malzeme · Mor</p>
+        <p class="price">₺420</p>
+        <a class="buy" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol'da İncele</a>
+      </article>
+
+    </div>
+  </section>
+  </section>
+
+  <hr class="rule">
+
+  <section id="hakkimizda" class="wrap">
+    <div class="about">
+      <div>
+        <p>Mahalledeki herkesin gözlüğünü tanıyan bir dükkanız. Muayeneden çerçeve seçimine, camın kesimine kadar her adımı biz takip ediyoruz.</p>
+      </div>
+      <div>
+        <p>MMETGÖZ OPTİK, 2010'dan bu yana aynı sokakta hizmet veriyor. Numaralı gözlükten güneş gözlüğüne, çocuk çerçevelerinden özel üretim modellere kadar geniş bir seçkiyi elinizde deneyebilirsiniz.</p>
+        <div class="stats">
+          <div class="stat"><b>15+</b><span>yıl deneyim</span></div>
+          <div class="stat"><b>2.000+</b><span>mutlu müşteri</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="iletisim" class="wrap">
+    <div class="section-head">
+      <h2>İletişim</h2>
+      <p>Denemek için uğrayın, yol tarifi veya stok sorusu için WhatsApp'tan yazın.</p>
+    </div>
+    <div class="contact">
+      <div class="contact-card">
+        <h3>Dükkan Bilgileri</h3>
+        <div class="contact-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+          <span>Bağdat Caddesi No: 128, Kadıköy / İstanbul</span>
+        </div>
+        <div class="contact-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8Z"/></svg>
+          <span>0216 555 00 00</span>
+        </div>
+        <div class="contact-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg>
+          <span>Pzt–Cmt 09.30–19.00, Pazar kapalı</span>
+        </div>
+      </div>
+      <div class="map-card">
+        <div>
+          <h3>Yol Tarifi</h3>
+          <div class="map-visual">Bağdat Caddesi, Kadıköy</div>
+        </div>
+        <a class="btn btn-primary" style="text-align:center" href="https://www.google.com/maps" target="_blank" rel="noopener">Haritada Aç</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span>© 2026 MMETGÖZ OPTİK</span>
+  <div class="social">
+    <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+    </a>
+    <a href="#" aria-label="WhatsApp" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.6 14.3c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3.1s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.5.7 1.8.8 1.9.1.1.1.3 0 .5-.1.2-.1.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.5 1.6.3.2.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.8.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+    </a>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/905555550000" target="_blank" rel="noopener" aria-label="WhatsApp'tan yazın">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.6 14.3c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3.1s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.5.7 1.8.8 1.9.1.1.1.3 0 .5-.1.2-.1.3-.3.5-.1.2-.3.4-.4.5-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.5 1.6.3.2.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.8.8.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"/></svg>
+</a>
+
+<script>
+  const buttons = document.querySelectorAll('.filters button');
+  const cards = document.querySelectorAll('#productGrid .card');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      cards.forEach(c => {
+        c.hidden = f !== 'all' && c.dataset.cat !== f;
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
