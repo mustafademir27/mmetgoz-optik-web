@@ -106,6 +106,18 @@
 
   .toolbar { display: flex; gap: 12px; margin: 22px 0; flex-wrap: wrap; }
 
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .filter-pill {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+  }
+  .filter-pill:hover { border-color: var(--amber); color: var(--ink); }
+  .filter-pill.active { background: var(--ink); border-color: var(--ink); color: var(--paper); font-weight: 500; }
+
   /* ---------- List view ---------- */
   .admin-grid {
     display: grid;
@@ -235,6 +247,12 @@
       <div class="toolbar">
         <button class="btn-primary" id="addBtn">+ Yeni Ürün</button>
       </div>
+      <div class="filters" id="categoryFilters" role="tablist" aria-label="Kategori filtrele">
+        <button class="filter-pill active" data-filter="all">Tümü</button>
+        <button class="filter-pill" data-filter="sun">Güneş Gözlüğü</button>
+        <button class="filter-pill" data-filter="optik">Numaralı Gözlük</button>
+        <button class="filter-pill" data-filter="cocuk">Çocuk Gözlüğü</button>
+      </div>
       <div class="admin-grid" id="adminGrid"></div>
     </div>
 
@@ -305,6 +323,7 @@
   let products = [];
   let editingIndex = null; // null = yeni ürün ekleniyor, sayı = mevcut ürün düzenleniyor
   let pendingImage = null; // { dataUrl, base64, path } — henüz commit edilmemiş yeni fotoğraf
+  let activeFilter = 'all';
 
   const loginScreen = document.getElementById('loginScreen');
   const panel = document.getElementById('panel');
@@ -315,6 +334,15 @@
   const listView = document.getElementById('listView');
   const editView = document.getElementById('editView');
   const adminGrid = document.getElementById('adminGrid');
+  const categoryFilters = document.getElementById('categoryFilters');
+
+  // products.json'daki yollar site köküne göre ("images/x.jpg"); admin sayfası
+  // /admin/ altında yaşadığı için bunları kök-göreli hale getiriyoruz.
+  function imageUrl(path) {
+    if (!path) return '';
+    if (/^([a-z]+:)?\/\//i.test(path) || path.startsWith('data:') || path.startsWith('/')) return path;
+    return '/' + path;
+  }
 
   function setStatus(kind, message) {
     statusBar.className = 'show ' + kind;
@@ -396,13 +424,24 @@
 
   // ---------- LIST VIEW ----------
   function renderList() {
+    // Kartlarda gerçek dizideki index'i (data-edit/data-delete) koruyoruz,
+    // filtre sadece hangi kartların gösterileceğini belirliyor.
+    const visible = products
+      .map((p, index) => ({ p, index }))
+      .filter(({ p }) => activeFilter === 'all' || p.category === activeFilter);
+
     if (products.length === 0) {
       adminGrid.innerHTML = '<div class="empty-state">Henüz ürün yok. "+ Yeni Ürün" ile ilk ürünü ekle.</div>';
       return;
     }
-    adminGrid.innerHTML = products.map((p, index) => `
+    if (visible.length === 0) {
+      adminGrid.innerHTML = '<div class="empty-state">Bu kategoride ürün yok.</div>';
+      return;
+    }
+
+    adminGrid.innerHTML = visible.map(({ p, index }) => `
       <div class="admin-card">
-        <div class="thumb"><img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy"></div>
+        <div class="thumb"><img src="${escapeHtml(imageUrl(p.image))}" alt="${escapeHtml(p.name)}" loading="lazy"></div>
         <div class="body">
           <span class="cat-pill ${escapeHtml(p.category)}">${escapeHtml(CATEGORY_LABELS[p.category] || p.category)}</span>
           <h3>${escapeHtml(p.name || '(isimsiz ürün)')}</h3>
@@ -423,6 +462,15 @@
       btn.addEventListener('click', () => deleteProduct(Number(btn.dataset.delete)));
     });
   }
+
+  categoryFilters.querySelectorAll('.filter-pill').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      categoryFilters.querySelectorAll('.filter-pill').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderList();
+    });
+  });
 
   function showList() {
     editView.style.display = 'none';
@@ -446,7 +494,7 @@
     pendingImage = null;
     const p = index === null ? emptyProduct() : products[index];
     editTitle.textContent = index === null ? 'Yeni Ürün Ekle' : 'Ürünü Düzenle';
-    editPreview.src = p.image;
+    editPreview.src = imageUrl(p.image);
     editName.value = p.name || '';
     editBrand.value = p.brand || '';
     editCategory.value = p.category || 'sun';
