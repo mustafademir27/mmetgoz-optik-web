@@ -1,0 +1,6 @@
+wrangler.jsonc
+worker.js
+netlify.toml
+netlify/
+.git
+.gitignore

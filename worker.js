@@ -1,16 +1,14 @@
-// Küçük admin panel için arka uç — Cloudflare Pages Functions sürümü.
-// - Kimlik doğrulama: paylaşılan bir şifre (ADMIN_PASSWORD env var).
+// Cloudflare Worker giriş noktası.
+// - "/api/admin" isteklerini bu dosyadaki admin API mantığı karşılar.
+// - Diğer tüm istekler statik dosya olarak (ASSETS binding, repo kökü) sunulur.
+//
+// Admin API — küçük bir yönetim paneli için arka uç:
+// - Kimlik doğrulama: paylaşılan bir şifre (ADMIN_PASSWORD ortam değişkeni/secret).
 // - Veri kaynağı: GitHub Contents API üzerinden bu reponun main dalı.
-//   Kullanıcının kendi GitHub token'ı (GITHUB_TOKEN env var) sunucu
-//   tarafında kalır, tarayıcıya asla gönderilmez.
-//
-// GET  -> products.json içeriğini döner.
-// POST -> { products: [...], newImages: [{ path, base64 }] } bekler,
-//         önce yeni fotoğrafları, sonra products.json'u commit'ler.
-//         Cloudflare Pages bu push'u yakalayıp siteyi yeniden yayınlar.
-//
-// Not: Cloudflare Workers ortamında Node'un Buffer'ı yok; base64<->utf8
-// dönüşümleri Web API'leri (atob/btoa + TextEncoder/TextDecoder) ile yapılıyor.
+//   GitHub token'ı (GITHUB_TOKEN ortam değişkeni/secret) sunucu tarafında kalır,
+//   tarayıcıya asla gönderilmez.
+// - Workers runtime'da Node'un Buffer'ı yok; base64<->utf8 dönüşümleri
+//   Web API'leri (atob/btoa + TextEncoder/TextDecoder) ile yapılıyor.
 
 const GITHUB_OWNER = "mustafademir27";
 const GITHUB_REPO = "mmetgoz-optik-web";
@@ -33,7 +31,6 @@ function githubHeaders(token) {
   };
 }
 
-// GitHub'ın döndürdüğü base64 (satır sonlarıyla) -> UTF-8 metin.
 function base64ToUtf8(b64) {
   const clean = b64.replace(/\s/g, "");
   const binary = atob(clean);
@@ -41,7 +38,6 @@ function base64ToUtf8(b64) {
   return new TextDecoder("utf-8").decode(bytes);
 }
 
-// UTF-8 metin -> base64 (GitHub'a commit için).
 function utf8ToBase64(str) {
   const bytes = new TextEncoder().encode(str);
   let binary = "";
@@ -63,8 +59,7 @@ async function readProductsFile(token) {
   return res.json();
 }
 
-export async function onRequest(context) {
-  const { request, env } = context;
+async function handleAdmin(request, env) {
   const method = request.method;
 
   if (method === "OPTIONS") {
@@ -163,3 +158,13 @@ export async function onRequest(context) {
     return jsonResponse(500, { error: "Beklenmeyen bir hata oluştu.", detail: String(err) });
   }
 }
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname === "/api/admin") {
+      return handleAdmin(request, env);
+    }
+    return env.ASSETS.fetch(request);
+  },
+};
