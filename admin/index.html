@@ -383,7 +383,7 @@
   }
 
   async function apiRequest(method, body) {
-    const res = await fetch('/.netlify/functions/admin', {
+    const res = await fetch('/api/admin', {
       method,
       headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
       body: body ? JSON.stringify(body) : undefined,
