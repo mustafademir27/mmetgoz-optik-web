@@ -553,6 +553,16 @@
   // Bu kategorilerde pazaryeri linki yerine her zaman dükkana (WhatsApp) yönlendiriyoruz.
   const INQUIRY_ONLY_CATEGORIES = new Set(['lens']);
 
+  // Fotoğrafı olmayan ürünler products.json'da images/placeholder.jpg ile kayıtlı.
+  // Gösterirken kategoriye uygun boş görseli seçiyoruz; veri olduğu gibi kalıyor.
+  const DEFAULT_PLACEHOLDER = 'images/placeholder.jpg';
+  const CATEGORY_PLACEHOLDERS = { lens: 'images/placeholder-lens.jpg' };
+
+  function imageFor(p) {
+    const hasOwnPhoto = p.image && p.image !== DEFAULT_PLACEHOLDER;
+    return hasOwnPhoto ? p.image : (CATEGORY_PLACEHOLDERS[p.category] || DEFAULT_PLACEHOLDER);
+  }
+
   const grid = document.getElementById('productGrid');
   const collectionSection = document.getElementById('koleksiyon');
   const buttons = document.querySelectorAll('.filters button');
@@ -628,7 +638,7 @@
       const cta = ctaFor(p);
       return `
       <article class="card cat-${escapeHtml(p.category)}" data-cat="${escapeHtml(p.category)}"${hidden ? ' hidden' : ''}>
-        <div class="card-art photo"><img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)} — ${escapeHtml(label)}" loading="lazy"></div>
+        <div class="card-art photo"><img src="${escapeHtml(imageFor(p))}" alt="${escapeHtml(p.name)} — ${escapeHtml(label)}" loading="lazy"></div>
         <h3>${escapeHtml(p.name)}</h3>
         <p class="meta">${escapeHtml(p.meta)}</p>
         <p class="price">${formatPrice(p.price)}</p>

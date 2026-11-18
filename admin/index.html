@@ -367,6 +367,16 @@
   // pazaryerine yönlendirilmez, sitede her zaman WhatsApp butonu çıkar.
   const INQUIRY_ONLY_CATEGORIES = new Set(['lens']);
 
+  // Fotoğrafı olmayan ürünler products.json'da images/placeholder.jpg ile kayıtlı.
+  // index.html ile aynı mantık. Gösterirken kategoriye uygun boş görseli seçiyoruz; veri olduğu gibi kalıyor.
+  const DEFAULT_PLACEHOLDER = 'images/placeholder.jpg';
+  const CATEGORY_PLACEHOLDERS = { lens: 'images/placeholder-lens.jpg' };
+
+  function imageFor(p) {
+    const hasOwnPhoto = p.image && p.image !== DEFAULT_PLACEHOLDER;
+    return hasOwnPhoto ? p.image : (CATEGORY_PLACEHOLDERS[p.category] || DEFAULT_PLACEHOLDER);
+  }
+
   // Lens ürünlerinin bilgisi çerçevelerden farklı (kullanım süresi, kutu adedi); ipucu kategoriye göre değişiyor.
   const FIELD_PLACEHOLDERS = {
     sun:   { brand: 'Örn: Vogue, Ray-Ban',            meta: 'Örn: Vogue · Kaplan deseni' },
@@ -512,7 +522,7 @@
 
     adminGrid.innerHTML = visible.map(({ p, index }) => `
       <div class="admin-card">
-        <div class="thumb"><img src="${escapeHtml(imageUrl(p.image))}" alt="${escapeHtml(p.name)}" loading="lazy"></div>
+        <div class="thumb"><img src="${escapeHtml(imageUrl(imageFor(p)))}" alt="${escapeHtml(p.name)}" loading="lazy"></div>
         <div class="body">
           <span class="cat-pill ${escapeHtml(p.category)}">${escapeHtml(CATEGORY_LABELS[p.category] || p.category)}</span>
           <h3>${escapeHtml(p.name || '(isimsiz ürün)')}</h3>
@@ -567,6 +577,12 @@
     editBrand.placeholder = placeholders.brand;
     editMeta.placeholder = placeholders.meta;
 
+    // Henüz fotoğraf seçilmediyse önizleme kategoriyle birlikte değişsin (gözlük ↔ lens kutusu).
+    if (!pendingImage) {
+      const storedImage = editingIndex === null ? DEFAULT_PLACEHOLDER : products[editingIndex].image;
+      editPreview.src = imageUrl(imageFor({ image: storedImage, category }));
+    }
+
     const inquiryOnly = INQUIRY_ONLY_CATEGORIES.has(category);
     editBuyUrl.hidden = inquiryOnly;
     buyUrlHint.hidden = !inquiryOnly;
@@ -580,7 +596,7 @@
     pendingImage = null;
     const p = index === null ? emptyProduct() : products[index];
     editTitle.textContent = index === null ? 'Yeni Ürün Ekle' : 'Ürünü Düzenle';
-    editPreview.src = imageUrl(p.image);
+    editPreview.src = imageUrl(imageFor(p));
     editName.value = p.name || '';
     editBrand.value = p.brand || '';
     editCategory.value = p.category || 'sun';
