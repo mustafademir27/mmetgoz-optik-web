@@ -224,6 +224,17 @@
 
   .card[hidden] { display: none; }
 
+  .grid .empty-state {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 48px 20px;
+    text-align: center;
+    color: var(--ink-soft);
+    background: var(--paper-alt);
+    border-radius: 4px;
+  }
+  .grid .empty-state a { color: var(--ink); }
+
   /* ---------- About ---------- */
   .about {
     display: grid;
@@ -397,6 +408,7 @@
     </a>
     <ul class="nav-links">
       <li><a href="#koleksiyon">Koleksiyon</a></li>
+      <li><a href="#lens" data-category-link="lens">Lens</a></li>
       <li><a href="#hakkimizda">Hakkımızda</a></li>
       <li><a href="#iletisim">İletişim</a></li>
     </ul>
@@ -439,6 +451,7 @@
       <button data-filter="sun">Güneş Gözlüğü</button>
       <button data-filter="optik">Numaralı Gözlük</button>
       <button data-filter="cocuk">Çocuk Gözlüğü</button>
+      <button data-filter="lens">Lens</button>
     </div>
 
     <div class="grid" id="productGrid" aria-busy="true"></div>
@@ -532,61 +545,153 @@
 </button>
 
 <script>
-  const CATEGORY_LABELS = { sun: 'Güneş Gözlüğü', optik: 'Numaralı Gözlük', cocuk: 'Çocuk Gözlüğü' };
+  const CATEGORY_LABELS = { sun: 'Güneş Gözlüğü', optik: 'Numaralı Gözlük', cocuk: 'Çocuk Gözlüğü', lens: 'Lens' };
+  const WHATSAPP_NUMBER = '905550272798';
+
+  // Kontakt lens tüketiciye internetten yalnızca optisyenin TİTCK izinli kendi sitesinden ve
+  // reçeteyle satılabiliyor (Tıbbi Cihaz Satış, Reklam ve Tanıtım Yönetmeliği, 03.07.2026 değişikliği).
+  // Bu kategorilerde pazaryeri linki yerine her zaman dükkana (WhatsApp) yönlendiriyoruz.
+  const INQUIRY_ONLY_CATEGORIES = new Set(['lens']);
+
   const grid = document.getElementById('productGrid');
+  const collectionSection = document.getElementById('koleksiyon');
   const buttons = document.querySelectorAll('.filters button');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   let activeFilter = 'all';
+  let allProducts = [];
+  let productsLoaded = false;
 
   function formatPrice(n) {
     return '₺' + Number(n).toLocaleString('tr-TR');
   }
 
   function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, (c) => ({
+    return String(str == null ? '' : str).replace(/[&<>"']/g, (c) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[c]));
   }
 
-  function renderProducts(products) {
-    grid.innerHTML = products.map((p) => {
+  function isCategory(key) {
+    return Object.prototype.hasOwnProperty.call(CATEGORY_LABELS, key);
+  }
+
+  // escapeHtml "javascript:" gibi şemaları engellemez; href'e sadece http(s) linkleri giriyor.
+  function safeUrl(url) {
+    try {
+      const parsed = new URL(url, location.href);
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function whatsappUrl(message) {
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  }
+
+  function ctaFor(p) {
+    if (INQUIRY_ONLY_CATEGORIES.has(p.category)) {
+      return {
+        href: whatsappUrl(`Merhaba, sitenizdeki "${p.name}" hakkında bilgi almak istiyorum.`),
+        label: "WhatsApp'tan Sor",
+      };
+    }
+    const url = safeUrl(p.buyUrl);
+    if (!url) return null;
+    const host = url.hostname.replace(/^www\./, '');
+    if (host.endsWith('trendyol.com')) return { href: url.href, label: "Trendyol'da İncele" };
+    if (host.endsWith('instagram.com')) return { href: url.href, label: "Instagram'da İncele" };
+    if (host === 'wa.me' || host.endsWith('whatsapp.com')) return { href: url.href, label: "WhatsApp'tan Sor" };
+    return { href: url.href, label: 'İncele' };
+  }
+
+  function emptyStateHtml() {
+    if (activeFilter === 'all') {
+      return '<p class="empty-state">Koleksiyon yakında burada olacak.</p>';
+    }
+    const label = CATEGORY_LABELS[activeFilter];
+    const link = whatsappUrl(`Merhaba, ${label} ürünleriniz hakkında bilgi almak istiyorum.`);
+    return `
+      <p class="empty-state">
+        ${escapeHtml(label)} ürünlerimiz yakında burada olacak.
+        Stok ve fiyat bilgisi için <a href="${escapeHtml(link)}" target="_blank" rel="noopener">WhatsApp'tan yazabilirsiniz</a>.
+      </p>`;
+  }
+
+  function renderProducts() {
+    let visibleCount = 0;
+    const cards = allProducts.map((p) => {
       const hidden = activeFilter !== 'all' && p.category !== activeFilter;
+      if (!hidden) visibleCount++;
       const label = CATEGORY_LABELS[p.category] || '';
+      const cta = ctaFor(p);
       return `
       <article class="card cat-${escapeHtml(p.category)}" data-cat="${escapeHtml(p.category)}"${hidden ? ' hidden' : ''}>
         <div class="card-art photo"><img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)} — ${escapeHtml(label)}" loading="lazy"></div>
         <h3>${escapeHtml(p.name)}</h3>
         <p class="meta">${escapeHtml(p.meta)}</p>
         <p class="price">${formatPrice(p.price)}</p>
-        <a class="buy" href="${escapeHtml(p.buyUrl)}" target="_blank" rel="noopener">Trendyol'da İncele</a>
+        ${cta ? `<a class="buy" href="${escapeHtml(cta.href)}" target="_blank" rel="noopener">${escapeHtml(cta.label)}</a>` : ''}
       </article>`;
     }).join('');
+
+    grid.innerHTML = cards + (visibleCount === 0 ? emptyStateHtml() : '');
   }
 
-  let allProducts = [];
+  function setFilter(filter, { updateHash = false } = {}) {
+    activeFilter = isCategory(filter) ? filter : 'all';
+    buttons.forEach((b) => b.classList.toggle('active', b.dataset.filter === activeFilter));
+    if (updateHash) {
+      // replaceState: sekme değişimi geçmişe kayıt eklemesin, ama link kopyalanınca doğru sekme açılsın.
+      history.replaceState(null, '', activeFilter === 'all' ? '#koleksiyon' : '#' + activeFilter);
+    }
+    if (productsLoaded) renderProducts();
+  }
+
+  function openCategory(key, { updateHash = false } = {}) {
+    setFilter(key, { updateHash });
+    collectionSection.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+  }
+
+  // "/#lens" gibi linkler (nav, Instagram bio, WhatsApp paylaşımı) doğrudan ilgili sekmeyi açar.
+  function applyHash() {
+    const key = decodeURIComponent(location.hash.slice(1));
+    if (isCategory(key)) openCategory(key);
+  }
 
   fetch('products.json')
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
     .then((data) => {
       allProducts = data.products || [];
+      productsLoaded = true;
       grid.removeAttribute('aria-busy');
-      renderProducts(allProducts);
+      renderProducts();
     })
     .catch(() => {
       grid.removeAttribute('aria-busy');
       grid.innerHTML = '<p>Ürünler şu anda yüklenemedi. Lütfen sayfayı yenileyin.</p>';
     });
 
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
-      renderProducts(allProducts);
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => setFilter(btn.dataset.filter, { updateHash: true }));
+  });
+
+  // Hash zaten "#lens" iken tekrar tıklanınca hashchange tetiklenmez; bu yüzden tıklamayı kendimiz yönetiyoruz.
+  document.querySelectorAll('[data-category-link]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      openCategory(link.dataset.categoryLink, { updateHash: true });
     });
   });
 
+  window.addEventListener('hashchange', applyHash);
+  applyHash();
+
   const toTopBtn = document.querySelector('.to-top');
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   window.addEventListener('scroll', () => {
     toTopBtn.classList.toggle('visible', window.scrollY > 600);
   });
