@@ -179,6 +179,15 @@
       "price": 6850,
       "image": "images/urun-1790860974147.jpg",
       "buyUrl": "https://www.instagram.com/mmetgozoptiklens?stkn=NGczOWFsM3F2aG0w"
+    },
+    {
+      "name": "lens",
+      "brand": "acuvue",
+      "meta": "2 haftalık",
+      "category": "lens",
+      "price": 2000,
+      "image": "images/placeholder.jpg",
+      "buyUrl": ""
     }
   ]
 }
