@@ -152,6 +152,7 @@
   .cat-pill.sun { background: var(--amber); }
   .cat-pill.optik { background: var(--teal); }
   .cat-pill.cocuk { background: #7A5FA6; }
+  .cat-pill.lens { background: #2F6F8F; }
   .admin-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 3px; }
   .admin-card .meta { color: var(--ink-soft); font-size: 0.85rem; margin: 0 0 6px; }
   .admin-card .price { font-weight: 600; margin: 0; }
@@ -185,6 +186,16 @@
     letter-spacing: 0.03em;
   }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-hint {
+    margin: 0;
+    padding: 11px 13px;
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+  .field-hint[hidden], input[hidden] { display: none; }
   .photo-picker {
     display: flex;
     align-items: center;
@@ -277,6 +288,7 @@
         <button class="filter-pill" data-filter="sun">Güneş Gözlüğü</button>
         <button class="filter-pill" data-filter="optik">Numaralı Gözlük</button>
         <button class="filter-pill" data-filter="cocuk">Çocuk Gözlüğü</button>
+        <button class="filter-pill" data-filter="lens">Lens</button>
       </div>
       <div class="admin-grid" id="adminGrid"></div>
     </div>
@@ -313,6 +325,7 @@
             <option value="sun">Güneş Gözlüğü</option>
             <option value="optik">Numaralı Gözlük</option>
             <option value="cocuk">Çocuk Gözlüğü</option>
+            <option value="lens">Lens</option>
           </select>
         </div>
       </div>
@@ -328,8 +341,9 @@
           <input type="number" min="0" step="1" id="editPrice">
         </div>
         <div class="field">
-          <label>Satın Alma Linki (Trendyol)</label>
-          <input type="url" id="editBuyUrl">
+          <label for="editBuyUrl">Satın Alma Linki (Trendyol / Instagram)</label>
+          <input type="url" id="editBuyUrl" placeholder="https://www.trendyol.com/...">
+          <p class="field-hint" id="buyUrlHint" hidden>Lens ürünleri pazaryerine değil, otomatik olarak WhatsApp'a yönlendirilir. Link girmene gerek yok.</p>
         </div>
       </div>
 
@@ -346,7 +360,20 @@
 </button>
 
 <script>
-  const CATEGORY_LABELS = { sun: 'Güneş Gözlüğü', optik: 'Numaralı Gözlük', cocuk: 'Çocuk Gözlüğü' };
+  const CATEGORY_LABELS = { sun: 'Güneş Gözlüğü', optik: 'Numaralı Gözlük', cocuk: 'Çocuk Gözlüğü', lens: 'Lens' };
+  const DEFAULT_BUY_URL = 'https://www.trendyol.com/magaza/m-m-461502';
+
+  // Sitedeki (index.html) INQUIRY_ONLY_CATEGORIES ile aynı olmalı: bu kategoriler mevzuat gereği
+  // pazaryerine yönlendirilmez, sitede her zaman WhatsApp butonu çıkar.
+  const INQUIRY_ONLY_CATEGORIES = new Set(['lens']);
+
+  // Lens ürünlerinin bilgisi çerçevelerden farklı (kullanım süresi, kutu adedi); ipucu kategoriye göre değişiyor.
+  const FIELD_PLACEHOLDERS = {
+    sun:   { brand: 'Örn: Vogue, Ray-Ban',            meta: 'Örn: Vogue · Kaplan deseni' },
+    optik: { brand: 'Örn: Vogue, Ray-Ban',            meta: 'Örn: Titanyum çerçeve · Mat siyah' },
+    cocuk: { brand: 'Örn: Nano Vista',                meta: 'Örn: Esnek malzeme · Mavi' },
+    lens:  { brand: 'Örn: Acuvue, Bausch + Lomb',     meta: "Örn: 2 haftalık · 6'lı kutu · Şeffaf" },
+  };
 
   let adminPassword = '';
   let products = [];
@@ -443,10 +470,22 @@
 
   function emptyProduct() {
     return {
-      name: '', brand: '', meta: '', category: 'sun', price: 0,
+      name: '', brand: '', meta: '',
+      // "Lens" filtresi açıkken "+ Yeni Ürün"e basılırsa kategori hazır seçili gelsin.
+      category: activeFilter !== 'all' ? activeFilter : 'sun',
+      price: 0,
       image: 'images/placeholder.jpg',
-      buyUrl: 'https://www.trendyol.com/magaza/m-m-461502',
+      buyUrl: DEFAULT_BUY_URL,
     };
+  }
+
+  function isHttpUrl(value) {
+    try {
+      const { protocol } = new URL(value);
+      return protocol === 'https:' || protocol === 'http:';
+    } catch {
+      return false;
+    }
   }
 
   function formatPrice(n) { return '₺' + Number(n || 0).toLocaleString('tr-TR'); }
@@ -517,6 +556,21 @@
   const editMeta = document.getElementById('editMeta');
   const editPrice = document.getElementById('editPrice');
   const editBuyUrl = document.getElementById('editBuyUrl');
+  const buyUrlHint = document.getElementById('buyUrlHint');
+
+  function syncCategoryFields() {
+    const category = editCategory.value;
+    const placeholders = FIELD_PLACEHOLDERS[category] || FIELD_PLACEHOLDERS.sun;
+    editBrand.placeholder = placeholders.brand;
+    editMeta.placeholder = placeholders.meta;
+
+    const inquiryOnly = INQUIRY_ONLY_CATEGORIES.has(category);
+    editBuyUrl.hidden = inquiryOnly;
+    buyUrlHint.hidden = !inquiryOnly;
+    // Lens'ten başka kategoriye geçilirse boş kalan link alanını varsayılanla doldur.
+    if (!inquiryOnly && !editBuyUrl.value.trim()) editBuyUrl.value = DEFAULT_BUY_URL;
+  }
+  editCategory.addEventListener('change', syncCategoryFields);
 
   function openEdit(index) {
     editingIndex = index;
@@ -529,7 +583,8 @@
     editCategory.value = p.category || 'sun';
     editMeta.value = p.meta || '';
     editPrice.value = Number(p.price) || 0;
-    editBuyUrl.value = p.buyUrl || 'https://www.trendyol.com/magaza/m-m-461502';
+    editBuyUrl.value = p.buyUrl || '';
+    syncCategoryFields();
     editPhotoInput.value = '';
     listView.style.display = 'none';
     editView.style.display = 'block';
@@ -559,6 +614,13 @@
       setStatus('error', 'Ürün adı boş olamaz.');
       return;
     }
+    const category = editCategory.value;
+    const inquiryOnly = INQUIRY_ONLY_CATEGORIES.has(category);
+    const buyUrl = inquiryOnly ? '' : editBuyUrl.value.trim();
+    if (!inquiryOnly && !isHttpUrl(buyUrl)) {
+      setStatus('error', 'Satın alma linki "https://" ile başlayan geçerli bir adres olmalı.');
+      return;
+    }
     const existingImage = editingIndex === null
       ? emptyProduct().image
       : products[editingIndex].image;
@@ -567,10 +629,10 @@
       name: editName.value.trim(),
       brand: editBrand.value.trim(),
       meta: editMeta.value.trim(),
-      category: editCategory.value,
+      category,
       price: Number(editPrice.value) || 0,
       image: pendingImage ? pendingImage.path : existingImage,
-      buyUrl: editBuyUrl.value.trim(),
+      buyUrl,
     };
 
     const newProducts = [...products];
