@@ -429,11 +429,14 @@
 
   function slugify(str) {
     return String(str)
-      .toLowerCase()
+      .toLocaleLowerCase('tr-TR')
       .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
       .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
       .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-+|-+$)/g, '') || 'urun';
+      .replace(/(^-+|-+$)/g, '')
+      // Sunucu dosya adını images/[a-z0-9-]{1,120}.jpg ile sınırlıyor; uzun ürün adları kırpılır.
+      .slice(0, 60)
+      .replace(/-+$/, '') || 'urun';
   }
 
   function resizeImageFile(file, maxDim, quality) {

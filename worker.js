@@ -48,6 +48,104 @@ function utf8ToBase64(str) {
   return btoa(binary);
 }
 
+// ---------------------------------------------------------------------------
+// Girdi doğrulama (whitelist). İstemci tarafındaki kontroller atlatılabilir;
+// GitHub token'ı repoya yazabildiği için asıl sınır burası.
+// netlify/functions/admin.js içindeki kopya ile aynı tutulmalı.
+// ---------------------------------------------------------------------------
+const CATEGORIES = new Set(["sun", "optik", "cocuk", "lens"]);
+// Sadece images/ altına, düz dosya adıyla .jpg: "../", alt klasör, .html, _redirects,
+// .github/workflows gibi yollar bu kalıba uymaz.
+const IMAGE_PATH_RE = /^images\/[a-z0-9][a-z0-9-]{0,119}\.jpg$/;
+const BASE64_RE = /^[A-Za-z0-9+/]+={0,2}$/;
+const JPEG_BASE64_PREFIX = "/9j/"; // FF D8 FF (JPEG imzası) base64'te böyle başlar
+const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
+const MAX_IMAGES_PER_REQUEST = 5;
+const MAX_PRODUCTS = 500;
+
+class ValidationError extends Error {}
+
+function readString(value, label, maxLength, { required = false } = {}) {
+  if (value == null) value = "";
+  if (typeof value !== "string") throw new ValidationError(`${label} metin olmalı.`);
+  const trimmed = value.trim();
+  if (required && !trimmed) throw new ValidationError(`${label} boş olamaz.`);
+  if (trimmed.length > maxLength) throw new ValidationError(`${label} en fazla ${maxLength} karakter olabilir.`);
+  return trimmed;
+}
+
+function isHttpUrl(value) {
+  try {
+    const { protocol } = new URL(value);
+    return protocol === "https:" || protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+// Bilinmeyen alanları atarak sadece beklenen şekli döndürür.
+function sanitizeProduct(raw, index) {
+  const label = `${index + 1}. ürün`;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    throw new ValidationError(`${label} geçersiz.`);
+  }
+
+  const name = readString(raw.name, `${label}: ad`, 200, { required: true });
+  const brand = readString(raw.brand, `${label}: marka`, 100);
+  const meta = readString(raw.meta, `${label}: açıklama`, 300);
+
+  if (!CATEGORIES.has(raw.category)) throw new ValidationError(`${label}: kategori geçersiz.`);
+
+  const price = Number(raw.price);
+  if (!Number.isFinite(price) || price < 0 || price > 10_000_000) {
+    throw new ValidationError(`${label}: fiyat geçersiz.`);
+  }
+
+  if (typeof raw.image !== "string" || !IMAGE_PATH_RE.test(raw.image)) {
+    throw new ValidationError(`${label}: fotoğraf yolu geçersiz.`);
+  }
+
+  const buyUrl = readString(raw.buyUrl, `${label}: satın alma linki`, 500);
+  if (buyUrl && !isHttpUrl(buyUrl)) {
+    throw new ValidationError(`${label}: satın alma linki http(s) ile başlamalı.`);
+  }
+
+  return { name, brand, meta, category: raw.category, price, image: raw.image, buyUrl };
+}
+
+function sanitizeNewImage(raw) {
+  if (!raw || typeof raw.path !== "string" || !IMAGE_PATH_RE.test(raw.path)) {
+    throw new ValidationError("Fotoğraf yolu geçersiz.");
+  }
+  if (typeof raw.base64 !== "string" || !BASE64_RE.test(raw.base64)) {
+    throw new ValidationError("Fotoğraf verisi geçersiz.");
+  }
+  if (!raw.base64.startsWith(JPEG_BASE64_PREFIX)) {
+    throw new ValidationError("Fotoğraf JPEG formatında olmalı.");
+  }
+  if (Math.floor((raw.base64.length * 3) / 4) > MAX_IMAGE_BYTES) {
+    throw new ValidationError("Fotoğraf çok büyük (en fazla 3 MB).");
+  }
+  return { path: raw.path, base64: raw.base64 };
+}
+
+function parseAdminPayload(payload) {
+  const { products, newImages } = payload || {};
+  if (!Array.isArray(products)) throw new ValidationError("Ürün listesi eksik veya hatalı.");
+  if (products.length > MAX_PRODUCTS) throw new ValidationError(`En fazla ${MAX_PRODUCTS} ürün olabilir.`);
+
+  const images = newImages == null ? [] : newImages;
+  if (!Array.isArray(images)) throw new ValidationError("Fotoğraf listesi hatalı.");
+  if (images.length > MAX_IMAGES_PER_REQUEST) {
+    throw new ValidationError(`Tek seferde en fazla ${MAX_IMAGES_PER_REQUEST} fotoğraf yüklenebilir.`);
+  }
+
+  return {
+    products: products.map(sanitizeProduct),
+    newImages: images.map(sanitizeNewImage),
+  };
+}
+
 async function readProductsFile(token) {
   const res = await fetch(
     `${GITHUB_API}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PRODUCTS_PATH}?ref=${BRANCH}`,
@@ -99,31 +197,33 @@ async function handleAdmin(request, env) {
         return jsonResponse(400, { error: "Geçersiz istek gövdesi." });
       }
 
-      const { products, newImages } = payload;
-      if (!Array.isArray(products)) {
-        return jsonResponse(400, { error: "Ürün listesi eksik veya hatalı." });
+      // Hiçbir şey commit'lenmeden önce tüm istek doğrulanır; yarım kalmış yazma olmaz.
+      let parsed;
+      try {
+        parsed = parseAdminPayload(payload);
+      } catch (err) {
+        if (err instanceof ValidationError) return jsonResponse(400, { error: err.message });
+        throw err;
       }
+      const { products, newImages } = parsed;
 
       // 1) Yeni yüklenen fotoğrafları commit'le (her biri yeni/benzersiz bir dosya adı).
-      if (Array.isArray(newImages)) {
-        for (const img of newImages) {
-          if (!img || !img.path || !img.base64) continue;
-          const putRes = await fetch(
-            `${GITHUB_API}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${img.path}`,
-            {
-              method: "PUT",
-              headers: { ...githubHeaders(token), "Content-Type": "application/json" },
-              body: JSON.stringify({
-                message: `Ürün fotoğrafı eklendi: ${img.path}`,
-                content: img.base64,
-                branch: BRANCH,
-              }),
-            }
-          );
-          if (!putRes.ok) {
-            const detail = await putRes.text();
-            return jsonResponse(502, { error: `Fotoğraf yüklenemedi: ${img.path}`, detail });
+      for (const img of newImages) {
+        const putRes = await fetch(
+          `${GITHUB_API}/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${img.path}`,
+          {
+            method: "PUT",
+            headers: { ...githubHeaders(token), "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: `Ürün fotoğrafı eklendi: ${img.path}`,
+              content: img.base64,
+              branch: BRANCH,
+            }),
           }
+        );
+        if (!putRes.ok) {
+          const detail = await putRes.text();
+          return jsonResponse(502, { error: `Fotoğraf yüklenemedi: ${img.path}`, detail });
         }
       }
 
